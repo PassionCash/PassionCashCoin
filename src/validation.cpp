@@ -845,7 +845,7 @@ CAmount GetBlockValue(int nHeight)
     }
     int64_t nSubsidy = 0;
     if (nHeight == 1) {
-        nSubsidy = 1200000 * COIN; // Premine
+        nSubsidy = 1200000 * COIN; // Premine 
     } else if (nHeight < 51 && nHeight > 1) { 
         nSubsidy = 1 * COIN; // Proof of Work
     } else if (nHeight < 43201 && nHeight > 50) {
