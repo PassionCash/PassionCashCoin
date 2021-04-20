@@ -106,7 +106,12 @@ public:
         MASTERNODE_REMOVE,
         MASTERNODE_VIN_SPENT,
     };
-
+    //MulitMN
+    enum LevelValue : int {
+        UNSPECIFIED = 0,
+        MIN = 1,
+        MAX = 4,
+    };
     CTxIn vin;
     CService addr;
     CPubKey pubKeyCollateralAddress;
@@ -116,6 +121,14 @@ public:
     int nScanningErrorCount;
     int nLastScanningErrorBlockHeight;
     CMasternodePing lastPing;
+    CAmount deposit;
+
+    //MulitMN
+    int Level();
+    static int Level(CAmount vin_val, int blockHeight);
+    static int Level(const CTxIn& vin, int blockHeight);
+    static bool IsDepositCoins(CAmount);
+    static bool IsDepositCoins(const CTxIn& vin, CAmount& vin_val);
 
     explicit CMasternode();
     CMasternode(const CMasternode& other);
@@ -136,6 +149,7 @@ public:
         pubKeyCollateralAddress = other.pubKeyCollateralAddress;
         pubKeyMasternode = other.pubKeyMasternode;
         sigTime = other.sigTime;
+        deposit = other.deposit;
         lastPing = other.lastPing;
         protocolVersion = other.protocolVersion;
         nScanningErrorCount = other.nScanningErrorCount;
@@ -168,6 +182,7 @@ public:
         READWRITE(vchSig);
         READWRITE(sigTime);
         READWRITE(protocolVersion);
+        READWRITE(deposit);
         READWRITE(lastPing);
         READWRITE(nScanningErrorCount);
         READWRITE(nLastScanningErrorBlockHeight);

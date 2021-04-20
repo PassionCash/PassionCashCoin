@@ -205,9 +205,44 @@ UniValue getmasternodecount (const JSONRPCRequest& request)
 
     const CBlockIndex* pChainTip = GetChainTip();
     if (!pChainTip) return "unknown";
+    
+    UniValue total{UniValue::VARR};
+    UniValue stable{UniValue::VARR};
+    UniValue enabled{UniValue::VARR};
+    UniValue inqueue{UniValue::VARR};
+    for(int l = CMasternode::LevelValue::MIN; l <= CMasternode::LevelValue::MAX; ++l) {
 
-    mnodeman.GetNextMasternodeInQueueForPayment(pChainTip->nHeight, true, nCount, pChainTip);
-    int total = mnodeman.CountNetworks(ipv4, ipv6, onion);
+        UniValue total_item{UniValue::VOBJ};
+        total_item.pushKV("level", l);
+        total_item.pushKV("count", mnodeman.size(l));
+        total.push_back(total_item);
+
+        UniValue stable_item{UniValue::VOBJ};
+
+        stable_item.pushKV("level", l);
+        stable_item.pushKV("count", mnodeman.stable_size(l));
+        stable.push_back(stable_item);
+
+        UniValue enabled_item{UniValue::VOBJ};
+
+        enabled_item.pushKV("level", l);
+        enabled_item.pushKV("count", mnodeman.CountEnabled(l));
+        enabled.push_back(enabled_item);
+
+        UniValue inqueue_item{UniValue::VOBJ};
+
+        int inqueue_count = 0u;
+
+        mnodeman.GetNextMasternodeInQueueForPayment(pChainTip->nHeight,l, true, nCount, pChainTip);
+
+        inqueue_item.pushKV("level", l);
+        inqueue_item.pushKV("count", inqueue_count);
+
+        inqueue.push_back(inqueue_item);
+    }
+
+
+    int total2 = mnodeman.CountNetworks(ipv4, ipv6, onion);
 
     obj.pushKV("total", total);
     obj.pushKV("stable", mnodeman.stable_size());
@@ -243,15 +278,20 @@ UniValue masternodecurrent (const JSONRPCRequest& request)
     if (!pChainTip) return "unknown";
 
     int nCount = 0;
-    const CMasternode* winner = mnodeman.GetNextMasternodeInQueueForPayment(pChainTip->nHeight + 1, true, nCount, pChainTip);
-    if (winner) {
+    UniValue result{UniValue::VARR};
+    for(int l = CMasternode::LevelValue::MIN; l <= CMasternode::LevelValue::MAX; ++l) {
+        const CMasternode* winner = mnodeman.GetNextMasternodeInQueueForPayment(pChainTip->nHeight,l, true, nCount, pChainTip);
+        if (!winner) 
+            continue;
+
         UniValue obj(UniValue::VOBJ);
+        obj.pushKV("level", winner->Level(winner->deposit,pChainTip->nHeight));
         obj.pushKV("protocol", (int64_t)winner->protocolVersion);
         obj.pushKV("txhash", winner->vin.prevout.hash.ToString());
         obj.pushKV("pubkey", EncodeDestination(winner->pubKeyCollateralAddress.GetID()));
         obj.pushKV("lastseen", winner->lastPing.IsNull() ? winner->sigTime : (int64_t)winner->lastPing.sigTime);
         obj.pushKV("activeseconds", winner->lastPing.IsNull() ? 0 : (int64_t)(winner->lastPing.sigTime - winner->sigTime));
-        return obj;
+        result.push_back(obj);
     }
 
     throw std::runtime_error("unknown");
@@ -397,6 +437,7 @@ UniValue startmasternode (const JSONRPCRequest& request)
             bool fSuccess = false;
             if (!StartMasternodeEntry(statusObj, mnb, fSuccess, mne, errorMessage, strCommand))
                 continue;
+            LogPrintf("Relay Masternodebroadcast\n");
             resultsObj.push_back(statusObj);
             RelayMNB(mnb, fSuccess, successful, failed);
         }
@@ -492,9 +533,10 @@ UniValue getmasternodeoutputs (const JSONRPCRequest& request)
             HelpExampleCli("getmasternodeoutputs", "") + HelpExampleRpc("getmasternodeoutputs", ""));
 
     // Find possible candidates
+    /*
     CWallet::AvailableCoinsFilter coinsFilter;
     coinsFilter.fIncludeDelegated = false;
-    coinsFilter.nCoinType = ONLY_10000;
+    coinsFilter.nCoinType = ONLY_MN_OUTPUTS;
     std::vector<COutput> possibleCoins;
     pwalletMain->AvailableCoins(&possibleCoins, nullptr, coinsFilter);
 
@@ -505,7 +547,23 @@ UniValue getmasternodeoutputs (const JSONRPCRequest& request)
         obj.pushKV("outputidx", out.i);
         ret.push_back(obj);
     }
-
+*/
+    CWallet::AvailableCoinsFilter coinsFilter;
+    coinsFilter.fIncludeDelegated = false;
+    coinsFilter.nCoinType = ONLY_MN_OUTPUTS;
+    std::vector<COutput> possibleCoins;
+    pwalletMain->AvailableCoins(&possibleCoins, nullptr, coinsFilter);
+    UniValue ret(UniValue::VARR);
+    for (COutput& out : possibleCoins) {
+        int level = CMasternode::Level(out.Value(),1);
+        if(level) {
+            UniValue obj(UniValue::VOBJ);
+            obj.pushKV("txhash", out.tx->GetHash().ToString());
+            obj.pushKV("outputidx", out.i);
+            obj.pushKV("level", level);
+            ret.push_back(obj);
+        }
+    }
     return ret;
 }
 

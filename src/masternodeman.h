@@ -106,7 +106,6 @@ public:
         READWRITE(mWeAskedForMasternodeList);
         READWRITE(mWeAskedForMasternodeListEntry);
         READWRITE(nDsqCount);
-
         READWRITE(mapSeenMasternodeBroadcast);
         READWRITE(mapSeenMasternodePing);
     }
@@ -129,10 +128,10 @@ public:
     int GetBestHeight() const { return nBestHeight.load(std::memory_order_acquire); }
 
     int CountEnabled(int protocolVersion = -1) const;
+    std::map<int, int> CountEnabledByLevels(int protocolVersion = -1);
 
     /// Count the number of nodes with a specific proto version for each network. Return the total.
     int CountNetworks(int& ipv4, int& ipv6, int& onion) const;
-
     void DsegUpdate(CNode* pnode);
 
     /// Find an entry
@@ -144,10 +143,11 @@ public:
     void CheckSpentCollaterals(const std::vector<CTransactionRef>& vtx);
 
     /// Find an entry in the masternode list that is next to be paid
-    const CMasternode* GetNextMasternodeInQueueForPayment(int nBlockHeight, bool fFilterSigTime, int& nCount, const CBlockIndex* pChainTip = nullptr) const;
-
+    //const CMasternode* GetNextMasternodeInQueueForPayment(int nBlockHeight, bool fFilterSigTime, int& nCount, const CBlockIndex* pChainTip = nullptr) const;
+    const CMasternode* GetNextMasternodeInQueueForPayment(int nBlockHeight, int mnlevel, bool fFilterSigTime, int& nCount, const CBlockIndex* pChainTip = nullptr) const;
     /// Get the current winner for this block
-    const CMasternode* GetCurrentMasterNode(int mod = 1, int64_t nBlockHeight = 0, int minProtocol = 0) const;
+    //const CMasternode* GetCurrentMasterNode(int mod = 1, int64_t nBlockHeight = 0, int minProtocol = 0) const;
+    const CMasternode* GetCurrentMasterNode(int mnlevel, int mod = 1, int64_t nBlockHeight = 0, int minProtocol = 0) const;
 
     /// vector of pairs <masternode winner, height>
     std::vector<std::pair<MasternodeRef, int>> GetMnScores(int nLast) const;
@@ -161,8 +161,11 @@ public:
     // Process GETMNLIST message, returning the banning score (if 0, no ban score increase is needed)
     int ProcessGetMNList(CNode* pfrom, CTxIn& vin);
 
+    int size(int mnlevel);    
     /// Return the number of Masternodes older than (default) 8000 seconds
-    int stable_size() const;
+    int stable_size(int mnlevel = CMasternode::LevelValue::UNSPECIFIED) const;
+    /// Return the number of Masternodes older than (default) 8000 seconds
+    //int stable_size() const;
 
     std::string ToString() const;
 

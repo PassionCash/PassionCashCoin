@@ -1669,7 +1669,7 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
 
 
     else if (strCommand == NetMsgType::PING) {
-        if (pfrom->nVersion > BIP0031_VERSION) {
+        //if (pfrom->nVersion > BIP0031_VERSION) {
             uint64_t nonce = 0;
             vRecv >> nonce;
             // Echo the message back with the nonce. This allows for two useful features:
@@ -1684,7 +1684,7 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
             // seconds to respond to each, the 5th ping the remote sends would appear to
             // return very quickly.
             connman.PushMessage(pfrom, msgMaker.Make(NetMsgType::PONG, nonce));
-        }
+        //}
     }
 
 
@@ -1999,14 +1999,14 @@ bool SendMessages(CNode* pto, CConnman& connman, std::atomic<bool>& interruptMsg
             }
             pto->fPingQueued = false;
             pto->nPingUsecStart = GetTimeMicros();
-            if (pto->nVersion > BIP0031_VERSION) {
-                pto->nPingNonceSent = nonce;
-                connman.PushMessage(pto, msgMaker.Make(NetMsgType::PING, nonce));
-            } else {
+            //if (pto->nVersion > BIP0031_VERSION) {
+            pto->nPingNonceSent = nonce;
+            connman.PushMessage(pto, msgMaker.Make(NetMsgType::PING, nonce));
+            /*} else {
                 // Peer is too old to support ping command with nonce, pong will never arrive.
                 pto->nPingNonceSent = 0;
                 connman.PushMessage(pto, msgMaker.Make(NetMsgType::PING));
-            }
+            }*/
         }
 
         TRY_LOCK(cs_main, lockMain); // Acquire cs_main for IsInitialBlockDownload() and CNodeState()

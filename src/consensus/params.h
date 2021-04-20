@@ -107,12 +107,11 @@ struct Params {
     int64_t nTargetSpacing;
     int nTimeSlotLength;
     int nMaxProposalPayments;
+    int nDevFee;
+    std::string strDevFeeAddress;
 
     // spork keys
     std::string strSporkPubKey;
-    std::string strSporkPubKeyOld;
-    int64_t nTime_EnforceNewSporkKey;
-    int64_t nTime_RejectOldSporkKey;
 
     // height-based activations
     int height_last_invalid_UTXO;

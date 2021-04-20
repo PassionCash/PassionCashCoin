@@ -59,7 +59,6 @@ public:
 
     // - gets Params().SporkPubkey()
     const CPubKey GetPublicKey() const;
-    const CPubKey GetPublicKeyOld() const;
 
     void Relay();
 

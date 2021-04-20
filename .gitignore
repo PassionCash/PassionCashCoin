@@ -149,3 +149,12 @@ build*
 pivxd.*
 pivxd-new-gui.*
 /cov-int/
+.vscode/settings.json
+dist/Applications
+depends/macdepends.sh
+dpi36.background.tiff
+dpi72.background.tiff
+makeLinux.sh
+makeMac.sh
+makeWin.sh
+run_pass.sh

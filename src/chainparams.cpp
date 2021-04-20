@@ -70,35 +70,13 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
  * + Contains no strange transactions
  */
 static Checkpoints::MapCheckpoints mapCheckpoints = {
-    { 259201, uint256S("1c9121bf9329a6234bfd1ea2d91515f19cd96990725265253f4b164283ade5dd")},
-    { 424998, uint256S("f31e381eedb0ed3ed65fcc98cc71f36012bee32e8efd017c4f9fb0620fd35f6b")},
-    { 616764, uint256S("29dd0bd1c59484f290896687b4ffb6a49afa5c498caf61967c69a541f8191557")}, //!< First block to use new modifierV1
-    { 623933, uint256S("c7aafa648a0f1450157dc93bd4d7448913a85b7448f803b4ab970d91fc2a7da7")},
-    { 791150, uint256S("8e76f462e4e82d1bd21cb72e1ce1567d4ddda2390f26074ffd1f5d9c270e5e50")},
-    { 795000, uint256S("4423cceeb9fd574137a18733416275a70fdf95283cc79ad976ca399aa424a443")},
-    { 863787, uint256S("5b2482eca24caf2a46bb22e0545db7b7037282733faa3a42ec20542509999a64")},
-    { 863795, uint256S("2ad866818c4866e0d555181daccc628056216c0db431f88a825e84ed4f469067")},
-    { 863805, uint256S("a755bd9a22b63c70d3db474f4b2b61a1f86c835b290a081bb3ec1ba2103eb4cb")},
-    { 867733, uint256S("03b26296bf693de5782c76843d2fb649cb66d4b05550c6a79c047ff7e1c3ae15")},
-    { 879650, uint256S("227e1d2b738b6cd83c46d1d64617934ec899d77cee34336a56e61b71acd10bb2")},
-    { 895400, uint256S("7796a0274a608fac12d400198174e50beda992c1d522e52e5b95b884bc1beac6")}, //!< Block that serial# range is enforced
-    { 895991, uint256S("d53013ed7ea5c325b9696c95e07667d6858f8ff7ee13fecfa90827bf3c9ae316")}, //!< Network split here
-    { 908000, uint256S("202708f8c289b676fceb832a079ff6b308a28608339acbf7584de533619d014d")},
-    {1142400, uint256S("98aff9d605bf123247f98b1e3a02567eb5799d208d78ec30fb89737b1c1f79c5")},
-    {1679090, uint256S("f747ce055ba1b12e1f2e842bd480bc647210799359cb2e553ab292065e3419d6")}, //!< First block with a "wrapped" serial spend
-    {1686229, uint256S("bb42bf1e886a7c23474634c90893dd3d68a6ccbfea4ac92a98da5cad0c6a6cb7")}, //!< Last block in the "wrapped" serial attack range
-    {1778954, uint256S("0d3241268264a2908d6babf00d9cd1ffb83d93d7bb4e428820127fe227c2029c")}, //!< Network split here
-    {1788528, uint256S("ea9243ff8fc079fdd7a04f11fac415de4d98e1bb0dc38db6f79f8f8bbfdbe496")}, //!< Network split here
-    {2153200, uint256S("14e477e597d24549cac5e59d97d32155e6ec2861c1003b42d0566f9bf39b65d5")}, //!< First v7 block
-    {2356049, uint256S("62e80d8e193bca84655fb78893b20f54a79f2d71124c4ea37b7ef51a0d5451c4")}, //!< Network split here
-    {2365700, uint256S("b5d0beead57735539abc2db2b0b08cd65db3e5928efd3c3bf3182d5bf013f36c")}, //!< PIVX v4.1.1 enforced
-    {2678402, uint256S("580a26ff0a45177a7a6f387f009c5b26140ea48b4790a857d9a796f8b3c25899")}, //!< Network split here
+    { 0, uint256S("0x001")},
 };
 
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
     1591401645, // * UNIX timestamp of last checkpoint block
-    5607713,    // * total number of transactions between genesis and last checkpoint
+    0,    // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the UpdateTip debug.log lines)
     3000        // * estimated number of transactions per day after checkpoint
 };
@@ -139,36 +117,35 @@ public:
         consensus.posLimitV2 = ~UINT256_ZERO >> 20;
         consensus.nBudgetCycleBlocks = 43200;       // approx. 1 every 30 days
         consensus.nBudgetFeeConfirmations = 6;      // Number of confirmations for the finalization fee
-        consensus.nCoinbaseMaturity = 100;
+        consensus.nCoinbaseMaturity = 6;
         consensus.nFutureTimeDriftPoW = 7200;
         consensus.nFutureTimeDriftPoS = 180;
         consensus.nMasternodeCountDrift = 20;       // num of MN we allow the see-saw payments to be off by
         consensus.nMaxMoneyOut = 21000000 * COIN;
         consensus.nPoolMaxTransactions = 3;
         consensus.nProposalEstablishmentTime = 60 * 60 * 24;    // must be at least a day old to make it into a budget
-        consensus.nStakeMinAge = 60 * 60;
-        consensus.nStakeMinDepth = 600;
+        consensus.nStakeMinAge = 60;
+        consensus.nStakeMinDepth = 6;
         consensus.nTargetTimespan = 40 * 60;
         consensus.nTargetTimespanV2 = 30 * 60;
         consensus.nTargetSpacing = 1 * 60;
         consensus.nTimeSlotLength = 15;
         consensus.nMaxProposalPayments = 6;
+        consensus.nDevFee = 5;
+        consensus.strDevFeeAddress = "PPP76HHpLF6N8mStbnQcpNdPQTQk4LBWti";
 
         // spork keys
-        consensus.strSporkPubKey = "0410050aa740d280b134b40b40658781fc1116ba7700764e0ce27af3e1737586b3257d19232e0cb5084947f5107e44bcd577f126c9eb4a30ea2807b271d2145298";
-        consensus.strSporkPubKeyOld = "040F129DE6546FE405995329A887329BED4321325B1A73B0A257423C05C1FCFE9E40EF0678AEF59036A22C42E61DFD29DF7EFB09F56CC73CADF64E05741880E3E7";
-        consensus.nTime_EnforceNewSporkKey = 1608512400;    //!> December 21, 2020 01:00:00 AM GMT
-        consensus.nTime_RejectOldSporkKey = 1614560400;     //!> March 1, 2021 01:00:00 AM GMT
+        consensus.strSporkPubKey = "0415B965B00D7F817A556DA1E9311E81AF290BFE5C9222109669B68E19DC2209D162480B92F3BE761B41EDC45808095E6BBA4D6D38CC9CB05102D7D86933103366";
 
         // height-based activations
-        consensus.height_last_invalid_UTXO = 894538;
-        consensus.height_last_ZC_AccumCheckpoint = 1686240;
-        consensus.height_last_ZC_WrappedSerials = 1686229;
-        consensus.height_ZC_RecalcAccumulators = 908000;
+        consensus.height_last_invalid_UTXO = INT_MAX;
+        consensus.height_last_ZC_AccumCheckpoint = INT_MAX;
+        consensus.height_last_ZC_WrappedSerials = INT_MAX;
+        consensus.height_ZC_RecalcAccumulators = INT_MAX;
 
         // validation by-pass
-        consensus.nPivxBadBlockTime = 1471401614;    // Skip nBit validation of Block 259201 per PR #915
-        consensus.nPivxBadBlockBits = 0x1c056dac;    // Skip nBit validation of Block 259201 per PR #915
+        //consensus.nPivxBadBlockTime = 1471401614;    // Skip nBit validation of Block 259201 per PR #915
+        //consensus.nPivxBadBlockBits = 0x1c056dac;    // Skip nBit validation of Block 259201 per PR #915
 
         // Zerocoin-related params
         consensus.ZC_Modulus = "25195908475657893494027183240048398571429282126204032027777137836043662020707595556264018525880784"
@@ -185,54 +162,39 @@ public:
         consensus.ZC_TimeStart = 1508214600;        // October 17, 2017 4:30:00 AM
 
         // Network upgrades
-        consensus.vUpgrades[Consensus::BASE_NETWORK].nActivationHeight =
-                Consensus::NetworkUpgrade::ALWAYS_ACTIVE;
-        consensus.vUpgrades[Consensus::UPGRADE_TESTDUMMY].nActivationHeight =
-                Consensus::NetworkUpgrade::NO_ACTIVATION_HEIGHT;
-        consensus.vUpgrades[Consensus::UPGRADE_POS].nActivationHeight           = 259201;
-        consensus.vUpgrades[Consensus::UPGRADE_POS_V2].nActivationHeight        = 615800;
-        consensus.vUpgrades[Consensus::UPGRADE_ZC].nActivationHeight            = 863787;
-        consensus.vUpgrades[Consensus::UPGRADE_ZC_V2].nActivationHeight         = 1153160;
-        consensus.vUpgrades[Consensus::UPGRADE_BIP65].nActivationHeight         = 1808634;
-        consensus.vUpgrades[Consensus::UPGRADE_ZC_PUBLIC].nActivationHeight     = 1880000;
-        consensus.vUpgrades[Consensus::UPGRADE_V3_4].nActivationHeight          = 1967000;
-        consensus.vUpgrades[Consensus::UPGRADE_V4_0].nActivationHeight          = 2153200;
-        consensus.vUpgrades[Consensus::UPGRADE_V5_0].nActivationHeight          = 2700500;
-        consensus.vUpgrades[Consensus::UPGRADE_V6_0].nActivationHeight =
-                Consensus::NetworkUpgrade::NO_ACTIVATION_HEIGHT;
-
-        consensus.vUpgrades[Consensus::UPGRADE_ZC].hashActivationBlock =
-                uint256S("0x5b2482eca24caf2a46bb22e0545db7b7037282733faa3a42ec20542509999a64");
-        consensus.vUpgrades[Consensus::UPGRADE_ZC_V2].hashActivationBlock =
-                uint256S("0x37ea75fe1c9314171cff429a91b25b9f11331076d1c9de50ee4054d61877f8af");
-        consensus.vUpgrades[Consensus::UPGRADE_BIP65].hashActivationBlock =
-                uint256S("0x82629b7a9978f5c7ea3f70a12db92633a7d2e436711500db28b97efd48b1e527");
-        consensus.vUpgrades[Consensus::UPGRADE_ZC_PUBLIC].hashActivationBlock =
-                uint256S("0xe2448b76d88d37aba4194ffed1041b680d779919157ddf5cbf423373d7f8078e");
-        consensus.vUpgrades[Consensus::UPGRADE_V3_4].hashActivationBlock =
-                uint256S("0x0ef2556e40f3b9f6e02ce611b832e0bbfe7734a8ea751c7b555310ee49b61456");
-        consensus.vUpgrades[Consensus::UPGRADE_V4_0].hashActivationBlock =
-                uint256S("0x14e477e597d24549cac5e59d97d32155e6ec2861c1003b42d0566f9bf39b65d5");
+        consensus.vUpgrades[Consensus::BASE_NETWORK].nActivationHeight          = Consensus::NetworkUpgrade::ALWAYS_ACTIVE;
+        consensus.vUpgrades[Consensus::UPGRADE_TESTDUMMY].nActivationHeight     = Consensus::NetworkUpgrade::NO_ACTIVATION_HEIGHT;
+        consensus.vUpgrades[Consensus::UPGRADE_POS].nActivationHeight           = 51;
+        consensus.vUpgrades[Consensus::UPGRADE_POS_V2].nActivationHeight        = 51;
+        consensus.vUpgrades[Consensus::UPGRADE_ZC].nActivationHeight            = INT_MAX;
+        consensus.vUpgrades[Consensus::UPGRADE_ZC_V2].nActivationHeight         = INT_MAX;
+        consensus.vUpgrades[Consensus::UPGRADE_BIP65].nActivationHeight         = 1;
+        consensus.vUpgrades[Consensus::UPGRADE_ZC_PUBLIC].nActivationHeight     = INT_MAX;
+        consensus.vUpgrades[Consensus::UPGRADE_V3_4].nActivationHeight          = 51;
+        consensus.vUpgrades[Consensus::UPGRADE_V4_0].nActivationHeight          = 51;
+        consensus.vUpgrades[Consensus::UPGRADE_V5_0].nActivationHeight          = 1;
+        consensus.vUpgrades[Consensus::UPGRADE_V6_0].nActivationHeight          = Consensus::NetworkUpgrade::NO_ACTIVATION_HEIGHT;
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
          * a large 4-byte int at any alignment.
          */
-        pchMessageStart[0] = 0x90;
-        pchMessageStart[1] = 0xc4;
-        pchMessageStart[2] = 0xfd;
-        pchMessageStart[3] = 0xe9;
-        nDefaultPort = 51472;
+        pchMessageStart[0] = 0x55;
+        pchMessageStart[1] = 0xAA;
+        pchMessageStart[2] = 0x56;
+        pchMessageStart[3] = 0xAB;
+        nDefaultPort = 23771;
+
 
         // Note that of those with the service bits flag, most only support a subset of possible options
-        vSeeds.emplace_back("fuzzbawls.pw", "pivx.seed.fuzzbawls.pw", true);     // Primary DNS Seeder from Fuzzbawls
-        vSeeds.emplace_back("fuzzbawls.pw", "pivx.seed2.fuzzbawls.pw", true);    // Secondary DNS Seeder from Fuzzbawls
+        //vSeeds.emplace_back("fuzzbawls.pw", "pivx.seed.fuzzbawls.pw", true);     // Primary DNS Seeder from Fuzzbawls
+        //vSeeds.emplace_back("fuzzbawls.pw", "pivx.seed2.fuzzbawls.pw", true);    // Secondary DNS Seeder from Fuzzbawls
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 30);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 13);
-        base58Prefixes[STAKING_ADDRESS] = std::vector<unsigned char>(1, 63);     // starting with 'S'
-        base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 212);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 55);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 65);  //starting with s
+        base58Prefixes[STAKING_ADDRESS] = std::vector<unsigned char>(1, 75);     // starting with 'S'
+        base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 255); //2m
         base58Prefixes[EXT_PUBLIC_KEY] = {0x02, 0x2D, 0x25, 0x33};
         base58Prefixes[EXT_SECRET_KEY] = {0x02, 0x21, 0x31, 0x2B};
         // BIP44 coin type is from https://github.com/satoshilabs/slips/blob/master/slip-0044.md
@@ -293,9 +255,6 @@ public:
 
         // spork keys
         consensus.strSporkPubKey = "04677c34726c491117265f4b1c83cef085684f36c8df5a97a3a42fc499316d0c4e63959c9eca0dba239d9aaaf72011afffeb3ef9f51b9017811dec686e412eb504";
-        consensus.strSporkPubKeyOld = "04E88BB455E2A04E65FCC41D88CD367E9CCE1F5A409BE94D8C2B4B35D223DED9C8E2F4E061349BA3A38839282508066B6DC4DB72DD432AC4067991E6BF20176127";
-        consensus.nTime_EnforceNewSporkKey = 1608512400;    //!> December 21, 2020 01:00:00 AM GMT
-        consensus.nTime_RejectOldSporkKey = 1614560400;     //!> March 1, 2021 01:00:00 AM GMT
 
         // height based activations
         consensus.height_last_invalid_UTXO = -1;
@@ -339,20 +298,20 @@ public:
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
          * a large 4-byte int at any alignment.
          */
-        pchMessageStart[0] = 0xf5;
-        pchMessageStart[1] = 0xe6;
-        pchMessageStart[2] = 0xd5;
-        pchMessageStart[3] = 0xca;
-        nDefaultPort = 51474;
+        pchMessageStart[0] = 0x57;
+        pchMessageStart[1] = 0xAC;
+        pchMessageStart[2] = 0x58;
+        pchMessageStart[3] = 0xAD;
+        nDefaultPort = 23772;
 
         // nodes with support for servicebits filtering should be at the top
-        vSeeds.emplace_back("fuzzbawls.pw", "pivx-testnet.seed.fuzzbawls.pw", true);
-        vSeeds.emplace_back("fuzzbawls.pw", "pivx-testnet.seed2.fuzzbawls.pw", true);
+        //vSeeds.emplace_back("fuzzbawls.pw", "pivx-testnet.seed.fuzzbawls.pw", true);
+        //vSeeds.emplace_back("fuzzbawls.pw", "pivx-testnet.seed2.fuzzbawls.pw", true);
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet pivx addresses start with 'x' or 'y'
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 19);  // Testnet pivx script addresses start with '8' or '9'
-        base58Prefixes[STAKING_ADDRESS] = std::vector<unsigned char>(1, 73);     // starting with 'W'
-        base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 239);     // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 21);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 73);  //starting with s
+        base58Prefixes[STAKING_ADDRESS] = std::vector<unsigned char>(1, 105);     // starting with 'S'
+        base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 254); 
         // Testnet pivx BIP32 pubkeys start with 'DRKV'
         base58Prefixes[EXT_PUBLIC_KEY] = {0x3a, 0x80, 0x61, 0xa0};
         // Testnet pivx BIP32 prvkeys start with 'DRKP'
@@ -418,9 +377,8 @@ public:
         Address: yCvUVd72w7xpimf981m114FSFbmAmne7j9
         */
         consensus.strSporkPubKey = "043969b1b0e6f327de37f297a015d37e2235eaaeeb3933deecd8162c075cee0207b13537618bde640879606001a8136091c62ec272dd0133424a178704e6e75bb7";
-        consensus.strSporkPubKeyOld = "";
-        consensus.nTime_EnforceNewSporkKey = 0;
-        consensus.nTime_RejectOldSporkKey = 0;
+
+
 
         // height based activations
         consensus.height_last_invalid_UTXO = -1;
@@ -470,7 +428,7 @@ public:
         pchMessageStart[1] = 0xcf;
         pchMessageStart[2] = 0x7e;
         pchMessageStart[3] = 0xac;
-        nDefaultPort = 51476;
+        nDefaultPort = 23773;
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet pivx addresses start with 'x' or 'y'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 19);  // Testnet pivx script addresses start with '8' or '9'

@@ -831,37 +831,67 @@ double ConvertBitsToDouble(unsigned int nBits)
 
 CAmount GetBlockValue(int nHeight)
 {
-    // Fixed block value on regtest
+    if (Params().NetworkIDString() == CBaseChainParams::TESTNET) {
+        if (nHeight < 51 && nHeight > 0)
+            return 250000 * COIN;
+        else 
+            return 7777 * COIN;
+    }
     if (Params().IsRegTestNet()) {
-        return 250 * COIN;
+        if (nHeight == 0)
+            return 250 * COIN;
+        else
+            return 100 * COIN;
     }
-    // Testnet high-inflation blocks [2, 200] with value 250k PIV
-    const bool isTestnet = Params().IsTestnet();
-    if (isTestnet && nHeight < 201 && nHeight > 1) {
-        return 250000 * COIN;
+    int64_t nSubsidy = 0;
+    if (nHeight == 1) {
+        nSubsidy = 1200000 * COIN; // Premine
+    } else if (nHeight < 51 && nHeight > 1) { 
+        nSubsidy = 1 * COIN; // Proof of Work
+    } else if (nHeight < 43201 && nHeight > 50) {
+        nSubsidy = 12 * COIN; // Phase 1
+    } else if (nHeight < 302401 && nHeight > 43200) {
+        nSubsidy = 10 * COIN; // Phase 2
+    }  else if (nHeight < 561601 && nHeight > 302400) {
+        nSubsidy = 8 * COIN; // Phase 3
+    }  else if (nHeight < 820801 && nHeight > 561600) {
+        nSubsidy = 7 * COIN; // Phase 4
+    }  else if (nHeight < 1080001 && nHeight > 820800) {
+        nSubsidy = 8 * COIN; // Phase 5
+    }  else if (nHeight < 1339201 && nHeight > 1080000) {
+        nSubsidy = 9 * COIN; // Phase 6
+    }  else if (nHeight < 1598401 && nHeight > 1339200) {
+        nSubsidy = 10 * COIN; // Phase 7
+    }  else if (nHeight < 2116801 && nHeight > 1598400) {
+        nSubsidy = 9 * COIN; // Phase 8
+    }  else if (nHeight < 2635201 && nHeight > 2116800) {
+        nSubsidy = 8 * COIN; // Phase 9
+    }  else if (nHeight < 3153601 && nHeight > 2635200) {
+        nSubsidy = 7 * COIN; // Phase 10
+    }  else if (nHeight < 4190401 && nHeight > 3153600) {
+        nSubsidy = 6 * COIN; // Phase 11
+    }  else if (nHeight < 5227201 && nHeight > 4190400) {
+        nSubsidy = 5 * COIN; // Phase 12
+    }  else if (nHeight < 7300801 && nHeight > 5227200) {
+        nSubsidy = 4 * COIN; // Phase 13
+    }  else if (nHeight < 11448001 && nHeight > 7300800) {
+        nSubsidy = 3 * COIN; // Phase 14
+    }  else if (nHeight < 41548321 && nHeight > 11448000) {
+        nSubsidy = 2 * COIN; // Phase 15
+    }  else {
+        nSubsidy = 0 * COIN;
     }
-    // Mainnet/Testnet block reward reduction schedule
-    const int nLast = Params().GetConsensus().vUpgrades[Consensus::UPGRADE_ZC_V2].nActivationHeight;
-    if (nHeight > nLast)   return 5    * COIN;
-    if (nHeight > 648000)  return 4.5  * COIN;
-    if (nHeight > 604800)  return 9    * COIN;
-    if (nHeight > 561600)  return 13.5 * COIN;
-    if (nHeight > 518400)  return 18   * COIN;
-    if (nHeight > 475200)  return 22.5 * COIN;
-    if (nHeight > 432000)  return 27   * COIN;
-    if (nHeight > 388800)  return 31.5 * COIN;
-    if (nHeight > 345600)  return 36   * COIN;
-    if (nHeight > 302400)  return 40.5 * COIN;
-    if (nHeight > 151200)  return 45   * COIN;
-    if (nHeight > 86400)   return 225  * COIN;
-    if (nHeight !=1)       return 250  * COIN;
-    // Premine for 6 masternodes at block 1
-    return 60001 * COIN;
+    return nSubsidy;
 }
 
-int64_t GetMasternodePayment()
+int64_t GetMasternodePayment(int mnlevel, CAmount blockValue)
 {
-    return 3 * COIN;
+    switch(mnlevel) {
+        case 1: return blockValue * 0.10;
+        case 2: return blockValue * 0.15;
+        case 3: return blockValue * 0.20;
+        case 4: return blockValue * 0.40;
+    }
 }
 
 bool IsInitialBlockDownload()
@@ -2664,8 +2694,11 @@ bool CheckColdStakeFreeOutput(const CTransaction& tx, const int nHeight)
     const unsigned int outs = tx.vout.size();
     const CTxOut& lastOut = tx.vout[outs-1];
     if (outs >=3 && lastOut.scriptPubKey != tx.vout[outs-2].scriptPubKey) {
-        if (lastOut.nValue == GetMasternodePayment())
-            return true;
+        for(int mnlevel = CMasternode::LevelValue::MIN; mnlevel <= CMasternode::LevelValue::MAX; ++mnlevel) {
+            CAmount mnOut = GetMasternodePayment(mnlevel, GetBlockValue(nHeight));
+            if (lastOut.nValue == mnOut)
+                return true;
+        }
 
         // This could be a budget block.
         if (Params().IsRegTestNet())
@@ -2870,7 +2903,7 @@ bool CheckWork(const CBlock& block, const CBlockIndex* const pindexPrev)
         return error("%s : null pindexPrev for block %s", __func__, block.GetHash().GetHex());
 
     unsigned int nBitsRequired = GetNextWorkRequired(pindexPrev, &block);
-
+    // TODO CLEANUP
     if (!Params().IsRegTestNet() && block.IsProofOfWork() && (pindexPrev->nHeight + 1 <= 68589)) {
         double n1 = ConvertBitsToDouble(block.nBits);
         double n2 = ConvertBitsToDouble(nBitsRequired);

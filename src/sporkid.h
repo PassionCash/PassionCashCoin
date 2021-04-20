@@ -26,7 +26,7 @@ enum SporkId : int32_t {
     SPORK_19_COLDSTAKING_MAINTENANCE            = 10019,
     SPORK_20_SAPLING_MAINTENANCE                = 10020,
     SPORK_21_LEGACY_MNS_MAX_HEIGHT              = 10021,
-
+    SPORK_30_DEVELOPMENT_FEE                    = 10030,
     SPORK_INVALID                               = -1
 };
 

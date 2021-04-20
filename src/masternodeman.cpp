@@ -198,11 +198,17 @@ bool CMasternodeMan::Add(CMasternode& mn)
     const auto& it = mapMasternodes.find(mn.vin.prevout);
     if (it == mapMasternodes.end()) {
         LogPrint(BCLog::MASTERNODE, "Adding new Masternode %s\n", mn.vin.prevout.ToString());
+
+        CTransactionRef prevout_tx;
+        uint256      hashBlock = 0;
+        bool vin_valid =  GetTransaction(mn.vin.prevout.hash, prevout_tx, hashBlock, true) && (mn.vin.prevout.n < prevout_tx->vout.size());
+        if(vin_valid)
+            mn.deposit = prevout_tx->vout[mn.vin.prevout.n].nValue;
+
         mapMasternodes.emplace(mn.vin.prevout, std::make_shared<CMasternode>(mn));
         LogPrint(BCLog::MASTERNODE, "Masternode added. New total count: %d\n", mapMasternodes.size());
         return true;
     }
-
     return false;
 }
 
@@ -333,32 +339,43 @@ void CMasternodeMan::Clear()
     mapSeenMasternodePing.clear();
     nDsqCount = 0;
 }
+int CMasternodeMan::size(int mnlevel)
+{
+    int cnt = 0;
+    for (const auto& it : mapMasternodes) {
+        const MasternodeRef& mn = it.second;
+        if(mn->Level(mn->deposit,1) == mnlevel) cnt++;
+        
+    }
+    return cnt;
+}
 
-int CMasternodeMan::stable_size() const
+int CMasternodeMan::stable_size(int mnlevel) const
 {
     int nStable_size = 0;
     int nMinProtocol = ActiveProtocol();
     int64_t nMasternode_Min_Age = MN_WINNER_MINIMUM_AGE;
     int64_t nMasternode_Age = 0;
-
-    for (const auto& it : mapMasternodes) {
-        const MasternodeRef& mn = it.second;
-        if (mn->protocolVersion < nMinProtocol) {
-            continue; // Skip obsolete versions
-        }
-        if (sporkManager.IsSporkActive (SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
-            nMasternode_Age = GetAdjustedTime() - mn->sigTime;
-            if ((nMasternode_Age) < nMasternode_Min_Age) {
-                continue; // Skip masternodes younger than (default) 8000 sec (MUST be > MASTERNODE_REMOVAL_SECONDS)
+        for (const auto& it : mapMasternodes) {
+            const MasternodeRef& mn = it.second;
+            if (mn->protocolVersion < nMinProtocol) {
+                continue; // Skip obsolete versions
             }
+            LogPrintf("Masternode mnlevel %d with deposit %d\n",mn->Level(),mn->deposit);
+            if(mnlevel != mn->Level())
+                continue;
+            if (sporkManager.IsSporkActive (SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
+                nMasternode_Age = GetAdjustedTime() - mn->sigTime;
+                if ((nMasternode_Age) < nMasternode_Min_Age) {
+                    continue; // Skip masternodes younger than (default) 8000 sec (MUST be > MASTERNODE_REMOVAL_SECONDS)
+                }
+            }
+
+            if (!mn->IsEnabled ()) {
+                continue; // Skip not-enabled masternodes
+            }
+            nStable_size++;
         }
-
-        if (!mn->IsEnabled ())
-            continue; // Skip not-enabled masternodes
-
-        nStable_size++;
-    }
-
     return nStable_size;
 }
 
@@ -374,6 +391,26 @@ int CMasternodeMan::CountEnabled(int protocolVersion) const
     }
 
     return i;
+}
+//MulitMN
+std::map<int, int> CMasternodeMan::CountEnabledByLevels(int protocolVersion)
+{
+    if(protocolVersion == -1)
+        protocolVersion = ActiveProtocol();//masternodePayments.GetMinMasternodePaymentsProto();
+
+    std::map<int, int> result;
+    for(unsigned l = CMasternode::LevelValue::MIN; l <= CMasternode::LevelValue::MAX; ++l)
+        result.emplace(l, 0u);
+
+    for (const auto& it : mapMasternodes) 
+    {
+        const MasternodeRef& mn = it.second;
+        bool enabled = mn->protocolVersion >= protocolVersion && mn->IsEnabled();
+        if(!enabled)
+            continue;
+        ++result[mn->Level()];
+    }
+    return result;
 }
 
 int CMasternodeMan::CountNetworks(int& ipv4, int& ipv6, int& onion) const
@@ -465,7 +502,7 @@ void CMasternodeMan::CheckSpentCollaterals(const std::vector<CTransactionRef>& v
 //
 // Deterministically select the oldest/best masternode to pay on the network
 //
-const CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight, bool fFilterSigTime, int& nCount, const CBlockIndex* pChainTip) const
+const CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight, int mnlevel, bool fFilterSigTime, int& nCount, const CBlockIndex* pChainTip) const
 {
     AssertLockNotHeld(cs_main);
     const CBlockIndex* BlockReading = (pChainTip == nullptr ? GetChainTip() : pChainTip);
@@ -479,16 +516,17 @@ const CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlock
         Make a vector with all of the last paid times
     */
 
-    int nMnCount = CountEnabled();
+    int nMnCount = CountEnabled(mnlevel);
     for (const auto& it : mapMasternodes) {
         const MasternodeRef& mn = it.second;
+        if(mn->Level() != mnlevel) continue;
         if (!mn->IsEnabled()) continue;
 
         // //check protocol version
         if (mn->protocolVersion < ActiveProtocol()) continue;
 
         //it's in the list (up to 8 entries ahead of current block to allow propagation) -- so let's skip it
-        if (masternodePayments.IsScheduled(*mn, nBlockHeight)) continue;
+        if (masternodePayments.IsScheduled(*mn, nMnCount, mnlevel, nBlockHeight)) continue;
 
         //it's too new, wait for a cycle
         if (fFilterSigTime && mn->sigTime + (nMnCount * 2.6 * 60) > GetAdjustedTime()) continue;
@@ -502,7 +540,7 @@ const CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlock
     nCount = (int)vecMasternodeLastPaid.size();
 
     //when the network is in the process of upgrading, don't penalize nodes that recently restarted
-    if (fFilterSigTime && nCount < nMnCount / 3) return GetNextMasternodeInQueueForPayment(nBlockHeight, false, nCount, BlockReading);
+    if (fFilterSigTime && nCount < nMnCount / 3) return GetNextMasternodeInQueueForPayment(nBlockHeight, mnlevel, false, nCount, BlockReading);
 
     // Sort them high to low
     sort(vecMasternodeLastPaid.rbegin(), vecMasternodeLastPaid.rend(), CompareLastPaid());
@@ -511,7 +549,7 @@ const CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlock
     //  -- This doesn't look at who is being paid in the +8-10 blocks, allowing for double payments very rarely
     //  -- 1/100 payments should be a double payment on mainnet - (1/(3000/10))*2
     //  -- (chance per block * chances before IsScheduled will fire)
-    int nTenthNetwork = CountEnabled() / 10;
+    int nTenthNetwork = nMnCount / 10;
     int nCountTenth = 0;
     uint256 nHigh;
     const uint256& hash = GetHashAtHeight(nBlockHeight - 101);
@@ -530,15 +568,22 @@ const CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlock
     return pBestMasternode;
 }
 
-const CMasternode* CMasternodeMan::GetCurrentMasterNode(int mod, int64_t nBlockHeight, int minProtocol) const
+const CMasternode* CMasternodeMan::GetCurrentMasterNode(int mnlevel, int mod, int64_t nBlockHeight, int minProtocol) const
 {
     int64_t score = 0;
     const CMasternode* winner = nullptr;
     const uint256& hash = GetHashAtHeight(nBlockHeight - 1);
+    
+    int check_mnlevel = mnlevel != CMasternode::LevelValue::UNSPECIFIED;
+
 
     // scan for winner
     for (const auto& it : mapMasternodes) {
         const MasternodeRef& mn = it.second;
+
+        if(check_mnlevel && mn->Level() != mnlevel)
+            continue;
+
         if (mn->protocolVersion < minProtocol || !mn->IsEnabled()) continue;
 
         // calculate the score for each Masternode
@@ -780,14 +825,18 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 int CMasternodeMan::ProcessMessageInner(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
     if (fLiteMode) return 0; //disable all Masternode related functionality
-    if (!masternodeSync.IsBlockchainSynced()) return 0;
-
+    if (!masternodeSync.IsBlockchainSynced()) {
+        LogPrint(BCLog::MASTERNODE, "Blockchain not synced ignore Masternode messages \n");
+        return 0;
+    }
     LOCK(cs_process_message);
 
     if (strCommand == NetMsgType::MNBROADCAST) {
         CMasternodeBroadcast mnb;
         vRecv >> mnb;
-        return ProcessMNBroadcast(pfrom, mnb);
+        int k = ProcessMNBroadcast(pfrom, mnb);
+        LogPrint(BCLog::MASTERNODE, "Process Masternodebroadcast - Return: %i\n",k);
+        return k;
 
     } else if (strCommand == NetMsgType::MNPING) {
         //Masternode Ping

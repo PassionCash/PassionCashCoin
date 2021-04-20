@@ -73,6 +73,7 @@ CMasternode::CMasternode() :
     pubKeyCollateralAddress = CPubKey();
     pubKeyMasternode = CPubKey();
     sigTime = 0;
+    deposit = 0 * COIN;
     lastPing = CMasternodePing();
     protocolVersion = PROTOCOL_VERSION;
     nScanningErrorCount = 0;
@@ -88,10 +89,60 @@ CMasternode::CMasternode(const CMasternode& other) :
     pubKeyCollateralAddress = other.pubKeyCollateralAddress;
     pubKeyMasternode = other.pubKeyMasternode;
     sigTime = other.sigTime;
+    deposit = other.deposit;
     lastPing = other.lastPing;
     protocolVersion = other.protocolVersion;
     nScanningErrorCount = other.nScanningErrorCount;
     nLastScanningErrorBlockHeight = other.nLastScanningErrorBlockHeight;
+}
+//MulitMN
+int CMasternode::Level(CAmount vin_val, int blockHeight)
+{
+    if (blockHeight >= 0 ) {
+      switch(vin_val) {
+          case 1000 * COIN: return 1;
+          case 5000 * COIN: return 2;
+          case 10000 * COIN: return 3;
+          case 25000 * COIN: return 4;
+      }
+    }
+    return 0;
+}
+//MulitMN
+int CMasternode::Level(const CTxIn& vin, int blockHeight)
+{
+    CAmount vin_val;
+    if(!IsDepositCoins(vin, vin_val))
+        return LevelValue::UNSPECIFIED;
+    return Level(vin_val, blockHeight);
+}
+int CMasternode::Level()
+    {
+        return Level(deposit, chainActive.Height());
+    }
+//MulitMN
+bool CMasternode::IsDepositCoins(CAmount vin_val)
+{
+    return Level(vin_val, chainActive.Height());
+}
+//MulitMN
+bool CMasternode::IsDepositCoins(const CTxIn& vin, CAmount& vin_val)
+{
+    CTransactionRef prevout_tx;
+    uint256      hashBlock = 0;
+    bool vin_valid =  GetTransaction(vin.prevout.hash, prevout_tx, hashBlock, true) && (vin.prevout.n < prevout_tx->vout.size());
+
+    if(!vin_valid) {
+         LogPrintf("Masternode.cpp:136: Vin not valid error\n");
+         return false;
+    }
+    CAmount vin_amount = prevout_tx->vout[vin.prevout.n].nValue;
+    if(!IsDepositCoins(vin_amount)) {
+        LogPrintf("Masternode.cpp:136: Vin not valid error\n");
+        return false;
+    }
+    vin_val = vin_amount;
+    return true;
 }
 
 uint256 CMasternode::GetSignatureHash() const
@@ -194,7 +245,10 @@ bool CMasternode::IsInputAssociatedWithPubkey() const
     uint256 hash;
     if(GetTransaction(vin.prevout.hash, txVin, hash, true)) {
         for (const CTxOut& out : txVin->vout) {
-            if (out.nValue == MN_COLL_AMT && out.scriptPubKey == payee) return true;
+            //if (out.nValue == MN_COLL_AMT && out.scriptPubKey == payee) return true;
+            if(CMasternode::Level(out.nValue, chainActive.Height()) && out.scriptPubKey == payee ) {
+                return true;
+            }
         }
     }
 
@@ -209,6 +263,10 @@ CMasternodeBroadcast::CMasternodeBroadcast(CService newAddr, CTxIn newVin, CPubK
         CMasternode()
 {
     vin = newVin;
+    if(!IsDepositCoins(newVin, deposit)) {
+        LogPrintf("Masternode.cpp:270 Create Masternodebroadcast deposit: %u\n", deposit);
+        deposit = 0u;
+    }
     addr = newAddr;
     pubKeyCollateralAddress = pubKeyCollateralAddressNew;
     pubKeyMasternode = pubKeyMasternodeNew;
@@ -414,13 +472,13 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
     if (!CheckSignature())
     {
         // don't ban for old masternodes, their sigs could be broken because of the bug
-        nDos = protocolVersion < MIN_PEER_MNANNOUNCE ? 0 : 100;
+        //nDos = protocolVersion < MIN_PEER_MNANNOUNCE ? 0 : 100;
         return error("%s : Got bad Masternode address signature", __func__);
     }
 
     if (Params().NetworkIDString() == CBaseChainParams::MAIN) {
-        if (addr.GetPort() != 51472) return false;
-    } else if (addr.GetPort() == 51472)
+        if (addr.GetPort() != Params().GetDefaultPort()) return false;
+    } else if (addr.GetPort() == Params().GetDefaultPort())
         return false;
 
     // incorrect ping or its sigTime
@@ -530,6 +588,7 @@ bool CMasternodeBroadcast::CheckInputsAndAdd(int nChainHeight, int& nDoS)
 void CMasternodeBroadcast::Relay()
 {
     CInv inv(MSG_MASTERNODE_ANNOUNCE, GetHash());
+    LogPrintf("Masternode.cpp:587 -> Relay Masternode broadcast\n");
     g_connman->RelayInv(inv);
 }
 
@@ -588,7 +647,7 @@ bool CMasternodePing::CheckAndUpdate(int& nDos, bool fRequireAvailable, bool fCh
         LogPrint(BCLog::MNPING,"%s: Masternode %s block hash %s is too old or has an invalid block hash\n",
                                         __func__, vin.prevout.hash.ToString(), blockHash.ToString());
         // don't ban peers relaying stale data before the active protocol enforcement
-        nDos = (ActiveProtocol() < MIN_PEER_CACHEDVERSION ? 0 : 33);
+        //nDos = (ActiveProtocol() < MIN_PEER_CACHEDVERSION ? 0 : 33);
         return false;
     }
 
