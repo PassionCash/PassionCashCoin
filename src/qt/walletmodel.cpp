@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2020 The Passion developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -421,7 +421,7 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
                 return InvalidAmount;
             }
             total += subtotal;
-        } else { // User-entered pivx address / amount:
+        } else { // User-entered passion address / amount:
             if (!validateAddress(rcp.address, rcp.isP2CS)) {
                 return InvalidAddress;
             }
@@ -539,7 +539,7 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction& tran
                 std::string value;
                 rcp.paymentRequest.SerializeToString(&value);
                 newTx->vOrderForm.emplace_back(key, value);
-            } else if (!rcp.message.isEmpty()) // Message from normal pivx:URI (pivx:XyZ...?message=example)
+            } else if (!rcp.message.isEmpty()) // Message from normal passion:URI (passion:XyZ...?message=example)
             {
                 newTx->vOrderForm.emplace_back("Message", rcp.message.toStdString());
             }
@@ -941,7 +941,7 @@ bool WalletModel::updateAddressBookPurpose(const QString &addressStr, const std:
     bool isStaking = false;
     CTxDestination address = DecodeDestination(addressStr.toStdString(), isStaking);
     if (isStaking)
-        return error("Invalid PIVX address, cold staking address");
+        return error("Invalid Passion address, cold staking address");
     CKeyID keyID;
     if (!getKeyId(address, keyID))
         return false;
@@ -951,11 +951,11 @@ bool WalletModel::updateAddressBookPurpose(const QString &addressStr, const std:
 bool WalletModel::getKeyId(const CTxDestination& address, CKeyID& keyID)
 {
     if (!IsValidDestination(address))
-        return error("Invalid PIVX address");
+        return error("Invalid Passion address");
 
     const CKeyID* inKeyID = boost::get<CKeyID>(&address);
     if (!inKeyID)
-        return error("Unable to get KeyID from PIVX address");
+        return error("Unable to get KeyID from Passion address");
 
     keyID = *inKeyID;
     return true;
@@ -968,7 +968,7 @@ std::string WalletModel::getLabelForAddress(const CTxDestination& address)
     return label;
 }
 
-// returns a COutPoint of 10000 PIV if found
+// returns a COutPoint of 10000 PASSION if found
 bool WalletModel::getMNCollateralCandidate(COutPoint& outPoint)
 {
     CWallet::AvailableCoinsFilter coinsFilter;

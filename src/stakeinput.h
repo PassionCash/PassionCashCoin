@@ -1,9 +1,9 @@
-// Copyright (c) 2017-2020 The PIVX developers
+// Copyright (c) 2017-2020 The Passion developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PIVX_STAKEINPUT_H
-#define PIVX_STAKEINPUT_H
+#ifndef Passion_STAKEINPUT_H
+#define Passion_STAKEINPUT_H
 
 #include "chain.h"
 #include "streams.h"
@@ -27,7 +27,7 @@ public:
     virtual bool GetTxOutFrom(CTxOut& out) const = 0;
     virtual CAmount GetValue() const = 0;
     virtual bool CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal, const bool onlyP2PK) = 0;
-    virtual bool IsZPIV() const = 0;
+    virtual bool IsZPASSION() const = 0;
     virtual CDataStream GetUniqueness() const = 0;
     virtual bool ContextCheck(int nHeight, uint32_t nTime) = 0;
 };
@@ -52,9 +52,9 @@ public:
     CDataStream GetUniqueness() const override;
     bool CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut = UINT256_ZERO) override;
     bool CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal, const bool onlyP2PK) override;
-    bool IsZPIV() const override { return false; }
+    bool IsZPASSION() const override { return false; }
     bool ContextCheck(int nHeight, uint32_t nTime) override;
 };
 
 
-#endif //PIVX_STAKEINPUT_H
+#endif //Passion_STAKEINPUT_H

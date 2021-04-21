@@ -4,7 +4,7 @@
 // Copyright (c) 2011-2013 The PPCoin developers
 // Copyright (c) 2013-2014 The NovaCoin Developers
 // Copyright (c) 2014-2018 The BlackCoin Developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2020 The Passion developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -62,7 +62,7 @@
 
 
 #if defined(NDEBUG)
-#error "PIVX cannot be compiled without assertions."
+#error "Passion cannot be compiled without assertions."
 #endif
 
 /**
@@ -1442,7 +1442,7 @@ static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck()
 {
-    util::ThreadRename("pivx-scriptch");
+    util::ThreadRename("passion-scriptch");
     scriptcheckqueue.Thread();
 }
 
@@ -1611,7 +1611,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                 if (isPublicSpend) {
                     libzerocoin::ZerocoinParams* params = consensus.Zerocoin_Params(false);
                     PublicCoinSpend publicSpend(params);
-                    if (!ZPIVModule::ParseZerocoinPublicSpend(txIn, tx, state, publicSpend)){
+                    if (!ZPASSIONModule::ParseZerocoinPublicSpend(txIn, tx, state, publicSpend)){
                         return false;
                     }
                     nValueIn += publicSpend.getDenomination() * COIN;
@@ -2824,7 +2824,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                 nHeight = (*mi).second->nHeight + 1;
         }
 
-        // PIVX
+        // Passion
         // It is entierly possible that we don't have enough data and this could fail
         // (i.e. the block could indeed be valid). Store the block for later consideration
         // but issue an initial reject message.
@@ -2915,11 +2915,11 @@ bool CheckWork(const CBlock& block, const CBlockIndex* const pindexPrev)
     }
 
     if (block.nBits != nBitsRequired) {
-        // Pivx Specific reference to the block with the wrong threshold was used.
+        // Passion Specific reference to the block with the wrong threshold was used.
         const Consensus::Params& consensus = Params().GetConsensus();
-        if ((block.nTime == (uint32_t) consensus.nPivxBadBlockTime) &&
-                (block.nBits == (uint32_t) consensus.nPivxBadBlockBits)) {
-            // accept PIVX block minted with incorrect proof of work threshold
+        if ((block.nTime == (uint32_t) consensus.nPassionBadBlockTime) &&
+                (block.nBits == (uint32_t) consensus.nPassionBadBlockBits)) {
+            // accept Passion block minted with incorrect proof of work threshold
             return true;
         }
 
@@ -3181,17 +3181,17 @@ bool AcceptBlock(const CBlock& block, CValidationState& state, CBlockIndex** ppi
 
         // Inputs
         std::vector<CTxIn> pivInputs;
-        std::vector<CTxIn> zPIVInputs;
+        std::vector<CTxIn> zPASSIONInputs;
 
         for (const CTxIn& stakeIn : stakeTxIn.vin) {
             if(stakeIn.IsZerocoinSpend()){
-                zPIVInputs.push_back(stakeIn);
+                zPASSIONInputs.push_back(stakeIn);
             }else{
                 pivInputs.push_back(stakeIn);
             }
         }
-        const bool hasPIVInputs = !pivInputs.empty();
-        const bool hasZPIVInputs = !zPIVInputs.empty();
+        const bool hasPASSIONInputs = !pivInputs.empty();
+        const bool hasZPASSIONInputs = !zPASSIONInputs.empty();
 
         // ZC started after PoS.
         // Check for serial double spent on the same block, TODO: Move this to the proper method..
@@ -3214,7 +3214,7 @@ bool AcceptBlock(const CBlock& block, CValidationState& state, CBlockIndex** ppi
                         if (isPublicSpend) {
                             libzerocoin::ZerocoinParams* params = consensus.Zerocoin_Params(false);
                             PublicCoinSpend publicSpend(params);
-                            if (!ZPIVModule::ParseZerocoinPublicSpend(in, tx, state, publicSpend)){
+                            if (!ZPASSIONModule::ParseZerocoinPublicSpend(in, tx, state, publicSpend)){
                                 return false;
                             }
                             spend = publicSpend;
@@ -3230,7 +3230,7 @@ bool AcceptBlock(const CBlock& block, CValidationState& state, CBlockIndex** ppi
                     }
                 }
                 if(tx.IsCoinStake()) continue;
-                if(hasPIVInputs) {
+                if(hasPASSIONInputs) {
                     // Check if coinstake input is double spent inside the same block
                     for (const CTxIn& pivIn : pivInputs)
                         if(pivIn.prevout == in.prevout)
@@ -3273,11 +3273,11 @@ bool AcceptBlock(const CBlock& block, CValidationState& state, CBlockIndex** ppi
                     for (const CTxIn& in: t.vin) {
                         // If this input is a zerocoin spend, and the coinstake has zerocoin inputs
                         // then store the serials for later check
-                        if(hasZPIVInputs && in.IsZerocoinSpend())
+                        if(hasZPASSIONInputs && in.IsZerocoinSpend())
                             vBlockSerials.push_back(TxInToZerocoinSpend(in).getCoinSerialNumber());
 
                         // Loop through every input of the staking tx
-                        if (hasPIVInputs) {
+                        if (hasPASSIONInputs) {
                             for (const CTxIn& stakeIn : pivInputs)
                                 // check if the tx input is double spending any coinstake input
                                 if (stakeIn.prevout == in.prevout)
@@ -3297,9 +3297,9 @@ bool AcceptBlock(const CBlock& block, CValidationState& state, CBlockIndex** ppi
             // Split height
             splitHeight = prev->nHeight;
 
-            // Now that this loop if completed. Check if we have zPIV inputs.
-            if(hasZPIVInputs) {
-                for (const CTxIn& zPivInput : zPIVInputs) {
+            // Now that this loop if completed. Check if we have zPASSION inputs.
+            if(hasZPASSIONInputs) {
+                for (const CTxIn& zPivInput : zPASSIONInputs) {
                     libzerocoin::CoinSpend spend = TxInToZerocoinSpend(zPivInput);
 
                     // First check if the serials were not already spent on the forked blocks.
@@ -3340,7 +3340,7 @@ bool AcceptBlock(const CBlock& block, CValidationState& state, CBlockIndex** ppi
             }
         } else {
             if(!isBlockFromFork)
-                for (const CTxIn& zPivInput : zPIVInputs) {
+                for (const CTxIn& zPivInput : zPASSIONInputs) {
                         libzerocoin::CoinSpend spend = TxInToZerocoinSpend(zPivInput);
                         if (!ContextualCheckZerocoinSpend(stakeTxIn, &spend, pindex->nHeight, UINT256_ZERO))
                             return state.DoS(100,error("%s: main chain ContextualCheckZerocoinSpend failed for tx %s", __func__,

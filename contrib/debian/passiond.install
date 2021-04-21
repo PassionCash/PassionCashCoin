@@ -1,0 +1,3 @@
+usr/local/bin/passiond usr/bin
+usr/local/bin/passion-cli usr/bin
+debian/examples/passion.conf etc/passion

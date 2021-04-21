@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=Passion Core
+Comment=Passion P2P Cryptocurrency
+Exec=passion-qt %u
+Terminal=false
+Type=Application
+Icon=passion128
+MimeType=x-scheme-handler/passion;
+Categories=Office;Finance;
+StartupWMClass=Passion-qt
+Name[de_DE]=passion-qt.desktop

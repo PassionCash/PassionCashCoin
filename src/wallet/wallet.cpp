@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2020 The Passion developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -2967,7 +2967,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend,
                 if (nChange > 0) {
                     // Fill a vout to ourself
                     // TODO: pass in scriptChange instead of reservekey so
-                    // change transaction isn't always pay-to-pivx-address
+                    // change transaction isn't always pay-to-passion-address
                     bool combineChange = false;
 
                     // coin control: send change to custom address
@@ -3180,7 +3180,7 @@ bool CWallet::CreateCoinStake(
         }
 
         // This should never happen
-        if (stakeInput.IsZPIV()) {
+        if (stakeInput.IsZPASSION()) {
             LogPrintf("%s: ERROR - zPOS is disabled\n", __func__);
             it++;
             continue;
@@ -4158,7 +4158,7 @@ std::string CWallet::GetWalletHelpString(bool showDebug)
     strUsage += HelpMessageOpt("-coldstaking=<n>", strprintf(_("Enable cold staking functionality (0-1, default: %u). Disabled if staking=0"), DEFAULT_COLDSTAKING));
     strUsage += HelpMessageOpt("-gen", strprintf(_("Generate coins (default: %u)"), DEFAULT_GENERATE));
     strUsage += HelpMessageOpt("-genproclimit=<n>", strprintf(_("Set the number of threads for coin generation if enabled (-1 = all cores, default: %d)"), DEFAULT_GENERATE_PROCLIMIT));
-    strUsage += HelpMessageOpt("-minstakesplit=<amt>", strprintf(_("Minimum positive amount (in PIV) allowed by GUI and RPC for the stake split threshold (default: %s)"), FormatMoney(DEFAULT_MIN_STAKE_SPLIT_THRESHOLD)));
+    strUsage += HelpMessageOpt("-minstakesplit=<amt>", strprintf(_("Minimum positive amount (in PASSION) allowed by GUI and RPC for the stake split threshold (default: %s)"), FormatMoney(DEFAULT_MIN_STAKE_SPLIT_THRESHOLD)));
     strUsage += HelpMessageOpt("-staking=<n>", strprintf(_("Enable staking functionality (0-1, default: %u)"), DEFAULT_STAKING));
     if (showDebug) {
         strUsage += HelpMessageGroup(_("Wallet debugging/testing options:"));
@@ -4208,10 +4208,10 @@ CWallet* CWallet::CreateWalletFromFile(const std::string walletFile)
             UIWarning(strprintf(_("Warning: error reading %s! All keys read correctly, but transaction data"
                          " or address book entries might be missing or incorrect."), walletFile));
         } else if (nLoadWalletRet == DB_TOO_NEW) {
-            UIError(strprintf(_("Error loading %s: Wallet requires newer version of PIVX Core"), walletFile));
+            UIError(strprintf(_("Error loading %s: Wallet requires newer version of Passion Core"), walletFile));
             return nullptr;
         } else if (nLoadWalletRet == DB_NEED_REWRITE) {
-            UIError(_("Wallet needed to be rewritten: restart PIVX Core to complete"));
+            UIError(_("Wallet needed to be rewritten: restart Passion Core to complete"));
             return nullptr;
         } else {
             UIError(strprintf(_("Error loading %s\n"), walletFile));
@@ -4232,7 +4232,7 @@ CWallet* CWallet::CreateWalletFromFile(const std::string walletFile)
     const bool fLegacyWallet = gArgs.GetBoolArg("-legacywallet", false);
     if (gArgs.GetBoolArg("-upgradewallet", fFirstRun && !fLegacyWallet) ||
             (!walletInstance->IsLocked() && prev_version == FEATURE_PRE_SPLIT_KEYPOOL)) {
-        if (prev_version <= FEATURE_PRE_PIVX && walletInstance->IsLocked()) {
+        if (prev_version <= FEATURE_PRE_Passion && walletInstance->IsLocked()) {
             // Cannot upgrade a locked wallet
             UIError("Cannot upgrade a locked wallet.");
             return nullptr;
@@ -4278,7 +4278,7 @@ CWallet* CWallet::CreateWalletFromFile(const std::string walletFile)
             }
             // Create legacy wallet
             LogPrintf("Creating Pre-HD Wallet\n");
-            walletInstance->SetMaxVersion(FEATURE_PRE_PIVX);
+            walletInstance->SetMaxVersion(FEATURE_PRE_Passion);
         }
 
         // Top up the keypool
@@ -4490,7 +4490,7 @@ void CWallet::SetNull()
     // Stake split threshold
     nStakeSplitThreshold = DEFAULT_STAKE_SPLIT_THRESHOLD;
 
-    // User-defined fee PIV/kb
+    // User-defined fee PASSION/kb
     fUseCustomFee = false;
     nCustomFee = CWallet::minTxFee.GetFeePerK();
 

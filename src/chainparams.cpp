@@ -1,7 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2020 The Passion developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -112,7 +112,7 @@ public:
         assert(genesis.hashMerkleRoot == uint256S("0x1b2ef6e2f28be914103a277377ae7729dcd125dfeb8bf97bd5964ba72b6dc39b"));
 
         consensus.fPowAllowMinDifficultyBlocks = false;
-        consensus.powLimit   = ~UINT256_ZERO >> 20;   // PIVX starting difficulty is 1 / 2^12
+        consensus.powLimit   = ~UINT256_ZERO >> 20;   // Passion starting difficulty is 1 / 2^12
         consensus.posLimitV1 = ~UINT256_ZERO >> 24;
         consensus.posLimitV2 = ~UINT256_ZERO >> 20;
         consensus.nBudgetCycleBlocks = 43200;       // approx. 1 every 30 days
@@ -144,8 +144,8 @@ public:
         consensus.height_ZC_RecalcAccumulators = INT_MAX;
 
         // validation by-pass
-        //consensus.nPivxBadBlockTime = 1471401614;    // Skip nBit validation of Block 259201 per PR #915
-        //consensus.nPivxBadBlockBits = 0x1c056dac;    // Skip nBit validation of Block 259201 per PR #915
+        //consensus.nPassionBadBlockTime = 1471401614;    // Skip nBit validation of Block 259201 per PR #915
+        //consensus.nPassionBadBlockBits = 0x1c056dac;    // Skip nBit validation of Block 259201 per PR #915
 
         // Zerocoin-related params
         consensus.ZC_Modulus = "25195908475657893494027183240048398571429282126204032027777137836043662020707595556264018525880784"
@@ -188,8 +188,8 @@ public:
 
 
         // Note that of those with the service bits flag, most only support a subset of possible options
-        //vSeeds.emplace_back("fuzzbawls.pw", "pivx.seed.fuzzbawls.pw", true);     // Primary DNS Seeder from Fuzzbawls
-        //vSeeds.emplace_back("fuzzbawls.pw", "pivx.seed2.fuzzbawls.pw", true);    // Secondary DNS Seeder from Fuzzbawls
+        //vSeeds.emplace_back("fuzzbawls.pw", "passion.seed.fuzzbawls.pw", true);     // Primary DNS Seeder from Fuzzbawls
+        //vSeeds.emplace_back("fuzzbawls.pw", "passion.seed2.fuzzbawls.pw", true);    // Secondary DNS Seeder from Fuzzbawls
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 55);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 65);  //starting with s
@@ -233,7 +233,7 @@ public:
         assert(genesis.hashMerkleRoot == uint256S("0x1b2ef6e2f28be914103a277377ae7729dcd125dfeb8bf97bd5964ba72b6dc39b"));
 
         consensus.fPowAllowMinDifficultyBlocks = true;
-        consensus.powLimit   = ~UINT256_ZERO >> 20;   // PIVX starting difficulty is 1 / 2^12
+        consensus.powLimit   = ~UINT256_ZERO >> 20;   // Passion starting difficulty is 1 / 2^12
         consensus.posLimitV1 = ~UINT256_ZERO >> 24;
         consensus.posLimitV2 = ~UINT256_ZERO >> 20;
         consensus.nBudgetCycleBlocks = 144;         // approx 10 cycles per day
@@ -305,18 +305,18 @@ public:
         nDefaultPort = 23772;
 
         // nodes with support for servicebits filtering should be at the top
-        //vSeeds.emplace_back("fuzzbawls.pw", "pivx-testnet.seed.fuzzbawls.pw", true);
-        //vSeeds.emplace_back("fuzzbawls.pw", "pivx-testnet.seed2.fuzzbawls.pw", true);
+        //vSeeds.emplace_back("fuzzbawls.pw", "passion-testnet.seed.fuzzbawls.pw", true);
+        //vSeeds.emplace_back("fuzzbawls.pw", "passion-testnet.seed2.fuzzbawls.pw", true);
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 21);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 73);  //starting with s
         base58Prefixes[STAKING_ADDRESS] = std::vector<unsigned char>(1, 105);     // starting with 'S'
         base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 254); 
-        // Testnet pivx BIP32 pubkeys start with 'DRKV'
+        // Testnet passion BIP32 pubkeys start with 'DRKV'
         base58Prefixes[EXT_PUBLIC_KEY] = {0x3a, 0x80, 0x61, 0xa0};
-        // Testnet pivx BIP32 prvkeys start with 'DRKP'
+        // Testnet passion BIP32 prvkeys start with 'DRKP'
         base58Prefixes[EXT_SECRET_KEY] = {0x3a, 0x80, 0x58, 0x37};
-        // Testnet pivx BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet passion BIP44 coin type is '1' (All coin's testnet default)
         base58Prefixes[EXT_COIN_TYPE] = {0x80, 0x00, 0x00, 0x01};
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
@@ -351,7 +351,7 @@ public:
         assert(genesis.hashMerkleRoot == uint256S("0x1b2ef6e2f28be914103a277377ae7729dcd125dfeb8bf97bd5964ba72b6dc39b"));
 
         consensus.fPowAllowMinDifficultyBlocks = true;
-        consensus.powLimit   = ~UINT256_ZERO >> 20;   // PIVX starting difficulty is 1 / 2^12
+        consensus.powLimit   = ~UINT256_ZERO >> 20;   // Passion starting difficulty is 1 / 2^12
         consensus.posLimitV1 = ~UINT256_ZERO >> 24;
         consensus.posLimitV2 = ~UINT256_ZERO >> 20;
         consensus.nBudgetCycleBlocks = 144;         // approx 10 cycles per day
@@ -430,15 +430,15 @@ public:
         pchMessageStart[3] = 0xac;
         nDefaultPort = 23773;
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet pivx addresses start with 'x' or 'y'
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 19);  // Testnet pivx script addresses start with '8' or '9'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet passion addresses start with 'x' or 'y'
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 19);  // Testnet passion script addresses start with '8' or '9'
         base58Prefixes[STAKING_ADDRESS] = std::vector<unsigned char>(1, 73);     // starting with 'W'
         base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 239);     // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
-        // Testnet pivx BIP32 pubkeys start with 'DRKV'
+        // Testnet passion BIP32 pubkeys start with 'DRKV'
         base58Prefixes[EXT_PUBLIC_KEY] = {0x3a, 0x80, 0x61, 0xa0};
-        // Testnet pivx BIP32 prvkeys start with 'DRKP'
+        // Testnet passion BIP32 prvkeys start with 'DRKP'
         base58Prefixes[EXT_SECRET_KEY] = {0x3a, 0x80, 0x58, 0x37};
-        // Testnet pivx BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet passion BIP44 coin type is '1' (All coin's testnet default)
         base58Prefixes[EXT_COIN_TYPE] = {0x80, 0x00, 0x00, 0x01};
 
         // Sapling

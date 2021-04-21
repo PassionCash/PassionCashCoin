@@ -1,0 +1,8 @@
+/usr/bin/passion-cli		--	gen_context(system_u:object_r:passion_exec_t,s0)
+/usr/sbin/passiond		--	gen_context(system_u:object_r:passion_exec_t,s0)
+/usr/lib(64)?/passion/passiond		--	gen_context(system_u:object_r:passion_exec_t,s0)
+
+/etc/passion(/.*)?		gen_context(system_u:object_r:passion_conf_t,s0)
+/var/lib/passion(/.*)?		gen_context(system_u:object_r:passion_var_lib_t,s0)
+
+(/var)?/run/passiond(/.*)?   gen_context(system_u:object_r:passion_var_run_t,s0)

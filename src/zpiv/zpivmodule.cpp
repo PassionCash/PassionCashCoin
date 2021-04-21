@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2020 The PIVX developers
+// Copyright (c) 2019-2020 The Passion developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -93,7 +93,7 @@ const uint256 PublicCoinSpend::signatureHash() const
     return h.GetHash();
 }
 
-namespace ZPIVModule {
+namespace ZPASSIONModule {
 
     // Return stream of CoinSpend from tx input scriptsig
     CDataStream ScriptSigToSerializedSpend(const CScript& scriptSig)
@@ -152,7 +152,7 @@ namespace ZPIVModule {
             return state.DoS(100, error("%s: public zerocoin spend prev output not found, prevTx %s, index %d",
                                         __func__, txIn.prevout.hash.GetHex(), txIn.prevout.n));
         }
-        if (!ZPIVModule::parseCoinSpend(txIn, tx, prevOut, publicSpend)) {
+        if (!ZPASSIONModule::parseCoinSpend(txIn, tx, prevOut, publicSpend)) {
             return state.Invalid(error("%s: invalid public coin spend parse %s\n", __func__,
                                        tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zpiv");
         }

@@ -1,0 +1,81 @@
+policy_module(passion, 1.100.1)
+
+########################################
+#
+# Declarations
+#
+
+type passion_t;
+type passion_exec_t;
+init_daemon_domain(passion_t, passion_exec_t)
+
+permissive passion_t;
+
+type passion_initrc_exec_t;
+init_script_file(passion_initrc_exec_t)
+
+type passion_conf_t;
+files_type(passion_conf_t)
+
+type passion_var_lib_t;
+files_type(passion_var_lib_t)
+
+type passion_var_run_t;
+files_type(passion_var_run_t)
+
+type passion_port_t;
+corenet_port(passion_port_t)
+
+########################################
+#
+# passion local policy
+#
+allow passion_t self:process { fork };
+
+allow passion_t self:fifo_file rw_fifo_file_perms;
+allow passion_t self:unix_stream_socket create_stream_socket_perms;
+
+manage_dirs_pattern(passion_t, passion_conf_t, passion_conf_t)
+manage_files_pattern(passion_t, passion_conf_t, passion_conf_t)
+
+manage_dirs_pattern(passion_t, passion_var_lib_t, passion_var_lib_t)
+manage_files_pattern(passion_t, passion_var_lib_t, passion_var_lib_t)
+files_var_lib_filetrans(passion_t, passion_var_lib_t, { dir file })
+
+manage_dirs_pattern(passion_t, passion_var_run_t, passion_var_run_t)
+manage_files_pattern(passion_t, passion_var_run_t, passion_var_run_t)
+
+sysnet_dns_name_resolve(passion_t)
+corenet_all_recvfrom_unlabeled(passion_t)
+
+allow passion_t self:tcp_socket create_stream_socket_perms;
+corenet_tcp_sendrecv_generic_if(passion_t)
+corenet_tcp_sendrecv_generic_node(passion_t)
+corenet_tcp_sendrecv_all_ports(passion_t)
+corenet_tcp_bind_generic_node(passion_t)
+
+gen_require(`
+    type passion_port_t;
+')
+allow passion_t passion_port_t:tcp_socket name_bind;
+
+gen_require(`
+    type passion_port_t;
+')
+allow passion_t passion_port_t:tcp_socket name_connect;
+
+domain_use_interactive_fds(passion_t)
+
+files_read_etc_files(passion_t)
+
+miscfiles_read_localization(passion_t)
+
+sysnet_dns_name_resolve(passion_t)
+
+allow passion_t passion_exec_t:file execute_no_trans;
+allow passion_t self:process setsched;
+corecmd_exec_ls(passion_t)
+corenet_tcp_connect_http_port(passion_t)
+dev_read_urand(passion_t)
+fs_getattr_xattr_fs(passion_t)
+kernel_read_system_state(passion_t)

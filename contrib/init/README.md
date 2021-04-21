@@ -1,11 +1,11 @@
 Sample configuration files for:
 ```
-SystemD: pivxd.service
-Upstart: pivxd.conf
-OpenRC:  pivxd.openrc
-         pivxd.openrcconf
-CentOS:  pivxd.init
-macOS:    org.pivx.pivxd.plist
+SystemD: passiond.service
+Upstart: passiond.conf
+OpenRC:  passiond.openrc
+         passiond.openrcconf
+CentOS:  passiond.init
+macOS:    org.passion.passiond.plist
 ```
 have been made available to assist packagers in creating node packages here.
 

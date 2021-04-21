@@ -1,0 +1,6 @@
+usr/local/bin/passion-qt usr/bin
+share/pixmaps/passion32.xpm usr/share/pixmaps
+share/pixmaps/passion16.xpm usr/share/pixmaps
+share/pixmaps/passion128.png usr/share/pixmaps
+debian/passion-qt.desktop usr/share/applications
+debian/passion-qt.protocol usr/share/kde4/services/

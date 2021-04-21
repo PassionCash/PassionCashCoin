@@ -1,9 +1,9 @@
-// Copyright (c) 2020 The PIVX developers
+// Copyright (c) 2020 The Passion developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PIVX_LEGACY_ZPOS_H
-#define PIVX_LEGACY_ZPOS_H
+#ifndef Passion_LEGACY_ZPOS_H
+#define Passion_LEGACY_ZPOS_H
 
 #include "stakeinput.h"
 #include "txdb.h"
@@ -20,7 +20,7 @@ public:
 
     explicit CLegacyZPivStake(const libzerocoin::CoinSpend& spend);
     bool InitFromTxIn(const CTxIn& txin) override;
-    bool IsZPIV() const override { return true; }
+    bool IsZPASSION() const override { return true; }
     uint32_t GetChecksum() const { return nChecksum; }
     const CBlockIndex* GetIndexFrom() const override;
     CAmount GetValue() const override;
@@ -31,4 +31,4 @@ public:
     virtual bool ContextCheck(int nHeight, uint32_t nTime) override;
 };
 
-#endif //PIVX_LEGACY_ZPOS_H
+#endif //Passion_LEGACY_ZPOS_H

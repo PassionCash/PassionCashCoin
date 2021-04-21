@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-# Copyright (c) 2019-2020 The PIVX developers
+# Copyright (c) 2019-2020 The Passion developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-from test_framework.test_framework import PivxTestFramework
+from test_framework.test_framework import PassionTestFramework
 from test_framework.util import (
     assert_equal,
     assert_raises_rpc_error,
@@ -14,7 +14,7 @@ from test_framework.util import (
     DecimalAmt,
 )
 
-class ReorgStakeTest(PivxTestFramework):
+class ReorgStakeTest(PassionTestFramework):
 
     def set_test_params(self):
         self.num_nodes = 3
@@ -51,7 +51,7 @@ class ReorgStakeTest(PivxTestFramework):
         return wi['balance'] + wi['immature_balance']
 
     def check_money_supply(self, expected_piv):
-        # verify that nodes have the expected PIV supply
+        # verify that nodes have the expected PASSION supply
         piv_supply = [self.nodes[i].getsupplyinfo(True)['transparentsupply']
                       for i in range(self.num_nodes)]
         assert_equal(piv_supply, [DecimalAmt(expected_piv)] * self.num_nodes)
@@ -65,7 +65,7 @@ class ReorgStakeTest(PivxTestFramework):
                     return True, x
             return False, None
 
-        # PIV supply: block rewards
+        # PASSION supply: block rewards
         expected_money_supply = 250.0 * 200
         self.check_money_supply(expected_money_supply)
         block_time_0 = block_time_1 = self.mocktime
@@ -161,8 +161,8 @@ class ReorgStakeTest(PivxTestFramework):
         res, utxo = findUtxoInList(stakeinput["txid"], stakeinput["vout"], self.nodes[0].listunspent())
         assert (not res or not utxo["spendable"])
 
-        # Verify that PIV supply was properly updated after the reorgs
-        self.log.info("Check PIV supply...")
+        # Verify that PASSION supply was properly updated after the reorgs
+        self.log.info("Check PASSION supply...")
         expected_money_supply += 250.0 * (self.nodes[1].getblockcount() - 200)
         self.check_money_supply(expected_money_supply)
         self.log.info("Supply checks out.")

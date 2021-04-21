@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2020 The PIVX developers
+// Copyright (c) 2017-2020 The Passion developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -96,7 +96,7 @@ bool CLegacyZPivStake::ContextCheck(int nHeight, uint32_t nTime)
 {
     const Consensus::Params& consensus = Params().GetConsensus();
     if (!consensus.NetworkUpgradeActive(nHeight, Consensus::UPGRADE_ZC_V2) || nHeight >= consensus.height_last_ZC_AccumCheckpoint)
-        return error("%s : zPIV stake block: height %d outside range", __func__, nHeight);
+        return error("%s : zPASSION stake block: height %d outside range", __func__, nHeight);
 
     // The checkpoint needs to be from 200 blocks ago
     const int cpHeight = nHeight - 1 - consensus.ZC_MinStakeDepth;

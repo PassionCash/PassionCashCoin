@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2016 The Dash developers
-// Copyright (c) 2016-2020 The PIVX developers
+// Copyright (c) 2016-2020 The Passion developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -76,7 +76,7 @@ public:
         Other,
         Generated,
         StakeMint,
-        StakeZPIV,
+        StakeZPASSION,
         SendToAddress,
         SendToOther,
         RecvWithAddress,
@@ -100,7 +100,7 @@ public:
         SendToSelfShieldedAddress, // Shielded send to self
         SendToSelfShieldToTransparent, // Unshield coins to self
         SendToSelfShieldToShieldChangeAddress, // Changing coins from one shielded address to another inside the wallet.
-        SendToNobody // Burned PIVs, op_return output.
+        SendToNobody // Burned PASSIONs, op_return output.
     };
 
     /** Number of confirmation recommended for accepting a transaction */
