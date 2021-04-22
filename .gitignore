@@ -158,3 +158,8 @@ makeLinux.sh
 makeMac.sh
 makeWin.sh
 run_pass.sh
+src/qt/passion-qt
+src/qt/passion-qt
+src/passiond
+src/passion-tx
+src/passion-cli

@@ -105,7 +105,7 @@ SendWidget::SendWidget(PassionGUI* parent) :
     coinIcon->show();
     coinIcon->raise();
 
-    setCssProperty(coinIcon, "coin-icon-piv");
+    setCssProperty(coinIcon, "coin-icon-passion");
 
     QSize BUTTON_SIZE = QSize(24, 24);
     coinIcon->setMinimumSize(BUTTON_SIZE);

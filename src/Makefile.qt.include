@@ -302,7 +302,6 @@ RES_ICONS = \
   qt/passion/res/img/ic-nav-cold-staking-active.svg \
   qt/passion/res/img/ic-nav-dashboard-active.svg \
   qt/passion/res/img/ic-wallet-status-locked.svg \
-  qt/passion/res/img/bg-splash.svg \
   qt/passion/res/img/bg-splash.png \
   qt/passion/res/img/ic-check-mint.svg \
   qt/passion/res/img/ic-nav-dashboard-hover.svg \
@@ -313,18 +312,10 @@ RES_ICONS = \
   qt/passion/res/img/ic-check-peers.svg \
   qt/passion/res/img/ic-nav-master-active.svg \
   qt/passion/res/img/ic-watch-password-white.svg \
-  qt/passion/res/img/bg-welcome-container.jpg \
   qt/passion/res/img/bg-welcome-container.png \
-  qt/passion/res/img/bg-welcome-container.svg \
-  qt/passion/res/img/bg-welcome-container@2x.png \
-  qt/passion/res/img/bg-welcome-container@3x.png \
   qt/passion/res/img/ic-check-staking-off.svg \
   qt/passion/res/img/ic-nav-master-hover.svg \
   qt/passion/res/img/ic-watch-password.svg \
-  qt/passion/res/img/bg-welcome.jpg \
-  qt/passion/res/img/bg-welcome.svg \
-  qt/passion/res/img/bg-welcome@2x.jpg \
-  qt/passion/res/img/bg-welcome@3x.jpg \
   qt/passion/res/img/bg-welcome.png \
   qt/passion/res/img/ic-check-staking.svg \
   qt/passion/res/img/ic-nav-master.svg \
@@ -389,38 +380,31 @@ RES_ICONS = \
   qt/passion/res/img/ic-radio-liliac-on.svg \
   qt/passion/res/img/img-empty-staking-off.svg \
   qt/passion/res/img/ic-arrow-drop-down.svg \
-  qt/passion/res/img/ic-coin-piv.svg \
+  qt/passion/res/img/ic-coin-passion.svg \
   qt/passion/res/img/ic-receive-off.svg \
   qt/passion/res/img/img-empty-staking-on.svg \
   qt/passion/res/img/ic-arrow-drop-up-white.svg \
-  qt/passion/res/img/ic-coin-zpiv.png \
   qt/passion/res/img/ic-receive-on.svg \
   qt/passion/res/img/img-empty-transactions.svg \
   qt/passion/res/img/ic-arrow-drop-up.svg \
-  qt/passion/res/img/ic-coin-zpiv.svg \
   qt/passion/res/img/ic-received.svg \
-  qt/passion/res/img/img-logo-passion.png \
   qt/passion/res/img/ic-arrow-drop-white-down.svg \
   qt/passion/res/img/ic-combo-box.svg \
   qt/passion/res/img/ic-send.svg \
-  qt/passion/res/img/img-logo-passion@2x.png \
   qt/passion/res/img/ic-arrow-purple-down.svg \
   qt/passion/res/img/ic-connect.svg \
   qt/passion/res/img/ic-submenu-lock.svg \
-  qt/passion/res/img/img-logo-passion@3x.png \
   qt/passion/res/img/img-logo-passion.svg \
   qt/passion/res/img/ic-arrow-right-white.svg \
   qt/passion/res/img/ic-arrow-left-white.svg \
   qt/passion/res/img/ic-arrow-left.svg \
   qt/passion/res/img/ic-copy-liliac.svg \
   qt/passion/res/img/ic-submenu-staking.svg \
-  qt/passion/res/img/img-nav-logo-passion.png \
   qt/passion/res/img/ic-arrow-right.svg \
   qt/passion/res/img/ic-copy.svg \
   qt/passion/res/img/ic-copy-big.svg \
   qt/passion/res/img/ic-copy-big-white.svg \
   qt/passion/res/img/ic-submenu-unlock.svg \
-  qt/passion/res/img/img-nav-logo.png \
   qt/passion/res/img/ic-arrow-white-left.svg \
   qt/passion/res/img/ic-exit.svg \
   qt/passion/res/img/ic-switch-liliac-on.svg \

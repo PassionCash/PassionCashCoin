@@ -2401,7 +2401,7 @@ HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH*/
 }
 
 
-*[cssClass="coin-icon-piv"] {
+*[cssClass="coin-icon-passion"] {
     /*    
         qproperty-icon: url("://ic-coin-passion") off, url("://ic-coin-passion") on ;
     
@@ -2415,16 +2415,7 @@ HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH*/
     border-radius: 14px;
 }
 
-*[cssClass="coin-icon-zpiv"] {
-    qproperty-icon: url("://ic-coin-zpiv") off,
-    url("://ic-coin-zpiv") on ;
-    qproperty-iconSize: 24px 24px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #FFFFFF;
-    border:  2px solid #1d0618;
-    border-radius: 14px;
-}
+
 
 
 
