@@ -565,7 +565,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="labelAmountPiv">
+           <widget class="QLabel" name="labelAmountPassionStake">
             <property name="text">
              <string notr="true">0 PASSION</string>
             </property>
@@ -575,7 +575,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="labelAmountZpiv">
+           <widget class="QLabel" name="labelAmountPassionMasternodeReward">
             <property name="text">
              <string notr="true">0 zPASSION</string>
             </property>
@@ -673,7 +673,7 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLabel" name="labelSquarePiv">
+                 <widget class="QLabel" name="labelSquarePassionStake">
                   <property name="minimumSize">
                    <size>
                     <width>14</width>
@@ -692,9 +692,9 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="labelPiv">
+                 <widget class="QLabel" name="labelPassionStake">
                   <property name="text">
-                   <string notr="true">PASSION</string>
+                   <string notr="true">Stake</string>
                   </property>
                  </widget>
                 </item>
@@ -715,7 +715,7 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLabel" name="labelSquarezPiv">
+                 <widget class="QLabel" name="labelSquarePassionMasternodeReward">
                   <property name="minimumSize">
                    <size>
                     <width>14</width>
@@ -734,9 +734,9 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="labelZpiv">
+                 <widget class="QLabel" name="labelPassionMasternodeReward">
                   <property name="text">
-                   <string notr="true">zPASSION</string>
+                   <string notr="true">Masternode</string>
                   </property>
                  </widget>
                 </item>

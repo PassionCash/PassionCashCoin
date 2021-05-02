@@ -75,7 +75,7 @@ TopBar::TopBar(PassionGUI* _mainWindow, QWidget *parent) :
     // Amount information top
     ui->widgetTopAmount->setVisible(false);
     setCssProperty({ui->labelAmountTopPiv, ui->labelAmountTopShieldedPiv}, "amount-small-topbar");
-    setCssProperty({ui->labelAmountPiv}, "amount-topbar");
+    setCssProperty({ui->labelAmountPassionStake}, "amount-topbar");
     setCssProperty({ui->labelPendingPiv, ui->labelImmaturePiv}, "amount-small-topbar");
 
     // Progress Sync
@@ -677,7 +677,7 @@ void TopBar::updateBalances(const interfaces::WalletBalances& newBalance)
     ui->labelAmountTopPiv->setText(totalTransparent);
     ui->labelAmountTopShieldedPiv->setText(totalShielded);
     // Expanded
-    ui->labelAmountPiv->setText(totalPiv);
+    ui->labelAmountPassionStake->setText(totalPiv);
     ui->labelPendingPiv->setText(GUIUtil::formatBalance(newBalance.unconfirmed_balance + newBalance.unconfirmed_shielded_balance, nDisplayUnit));
     ui->labelImmaturePiv->setText(GUIUtil::formatBalance(newBalance.immature_balance, nDisplayUnit));
 }

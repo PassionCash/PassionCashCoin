@@ -68,11 +68,11 @@ MasterNodeWizardDialog::MasterNodeWizardDialog(WalletModel *model, QWidget *pare
     ui->stackedWidget->setCurrentIndex(pos);
     ui->lineEditPort->setEnabled(false);    // use default port number
     if (walletModel->isRegTestNetwork()) {
-        ui->lineEditPort->setText("51476");
+        ui->lineEditPort->setText("23773");
     } else if (walletModel->isTestNetwork()) {
-        ui->lineEditPort->setText("51474");
+        ui->lineEditPort->setText("23772");
     } else {
-        ui->lineEditPort->setText("51472");
+        ui->lineEditPort->setText("23771");
     }
 
     // Confirm icons
@@ -91,6 +91,22 @@ MasterNodeWizardDialog::MasterNodeWizardDialog(WalletModel *model, QWidget *pare
     connect(ui->pushButtonSkip, &QPushButton::clicked, this, &MasterNodeWizardDialog::close);
     connect(ui->btnNext, &QPushButton::clicked, this, &MasterNodeWizardDialog::accept);
     connect(ui->btnBack, &QPushButton::clicked, this, &MasterNodeWizardDialog::onBackClicked);
+    connect(ui->radioLevel1, &QPushButton::clicked, this, &MasterNodeWizardDialog::onRadioLevel1_clicked);
+    connect(ui->radioLevel2, &QPushButton::clicked, this, &MasterNodeWizardDialog::onRadioLevel2_clicked);
+    connect(ui->radioLevel3, &QPushButton::clicked, this, &MasterNodeWizardDialog::onRadioLevel3_clicked);
+    connect(ui->radioLevel4, &QPushButton::clicked, this, &MasterNodeWizardDialog::onRadioLevel4_clicked);
+}
+void MasterNodeWizardDialog::onRadioLevel1_clicked() {
+    mnLevelValue = 1000 * COIN;
+}
+void MasterNodeWizardDialog::onRadioLevel2_clicked() {
+    mnLevelValue = 5000 * COIN;
+}
+void MasterNodeWizardDialog::onRadioLevel3_clicked() {
+    mnLevelValue = 10000 * COIN;
+}
+void MasterNodeWizardDialog::onRadioLevel4_clicked() {
+    mnLevelValue = 25000 * COIN;
 }
 
 void MasterNodeWizardDialog::showEvent(QShowEvent *event)
@@ -192,12 +208,12 @@ bool MasterNodeWizardDialog::createMN()
     CKey secret;
     secret.MakeNewKey(false);
     std::string mnKeyString = EncodeSecret(secret);
-
-    // Look for a valid collateral utxo
+        // Look for a valid collateral utxo
     COutPoint collateralOut;
 
     // If not found create a new collateral tx
     if (!walletModel->getMNCollateralCandidate(collateralOut)) {
+
         // New receive address
         Destination dest;
         PairResult r = walletModel->getNewAddress(dest, alias);
@@ -207,12 +223,16 @@ bool MasterNodeWizardDialog::createMN()
             inform(tr(r.status->c_str()));
             return false;
         }
-
+        if (mnLevelValue == 0) {
+            // no Masternode level selected
+            inform(tr("Please select a masternode level to create"));
+            return false;
+        }
         // const QString& addr, const QString& label, const CAmount& amount, const QString& message
         SendCoinsRecipient sendCoinsRecipient(
                 QString::fromStdString(dest.ToString()),
                 QString::fromStdString(alias),
-                CAmount(10000) * COIN,
+                mnLevelValue,
                 "");
 
         // Send the 10 tx to one of your address
@@ -262,7 +282,7 @@ bool MasterNodeWizardDialog::createMN()
         int indexOut = -1;
         for (int i=0; i < (int)walletTx->vout.size(); i++) {
             const CTxOut& out = walletTx->vout[i];
-            if (out.nValue == MN_COLL_AMT) {
+            if (out.nValue == mnLevelValue) {
                 indexOut = i;
                 break;
             }
@@ -274,7 +294,6 @@ bool MasterNodeWizardDialog::createMN()
         // save the collateral outpoint
         collateralOut = COutPoint(walletTx->GetHash(), indexOut);
     }
-
     // Update the conf file
     std::string strConfFile = "masternode.conf";
     std::string strDataDir = GetDataDir().string();

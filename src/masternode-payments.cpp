@@ -559,7 +559,6 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
         for (const CTxOut& out : txNew.vout) {
             CTxDestination DevFundDestination;
             ExtractDestination(out.scriptPubKey, DevFundDestination);
-            //LogPrintf("DevAddres %s PaymentAddress = %s \n", consensus.strDevFeeAddress,EncodeDestination(DevFundDestination).c_str());
             if (consensus.strDevFeeAddress == EncodeDestination(DevFundDestination).c_str()) {
                 if(out.nValue != devFeeFund) 
                     break;

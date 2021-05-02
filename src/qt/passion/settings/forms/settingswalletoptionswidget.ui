@@ -127,13 +127,13 @@
              <number>8</number>
             </property>
             <property name="minimum">
-             <number>0</number>
+             <double>0.000000000000000</double>
             </property>
             <property name="maximum">
-             <number>999999</number>
+             <double>999999.000000000000000</double>
             </property>
             <property name="value">
-             <number>500</number>
+             <double>500.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -293,6 +293,13 @@
             <widget class="QCheckBox" name="checkBoxMap">
              <property name="text">
               <string>Map port using UPnP</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxCombine">
+             <property name="text">
+              <string>Merge small UTXO to stake threshold</string>
              </property>
             </widget>
            </item>

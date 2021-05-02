@@ -588,7 +588,6 @@ bool CMasternodeBroadcast::CheckInputsAndAdd(int nChainHeight, int& nDoS)
 void CMasternodeBroadcast::Relay()
 {
     CInv inv(MSG_MASTERNODE_ANNOUNCE, GetHash());
-    LogPrintf("Masternode.cpp:587 -> Relay Masternode broadcast\n");
     g_connman->RelayInv(inv);
 }
 

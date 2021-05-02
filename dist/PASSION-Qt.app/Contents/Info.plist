@@ -11,19 +11,19 @@
   </array>
 
   <key>CFBundleIconFile</key>
-  <string>bitcoin.icns</string>
+  <string>passion.icns</string>
 
   <key>CFBundlePackageType</key>
   <string>APPL</string>
 
   <key>CFBundleGetInfoString</key>
-  <string>5.0.99.0, Copyright © 2009-2021 The Bitcoin Core developers, 2014-2021 The Dash Core developers, 2015-2021 The Passion Core developers</string>
+  <string>1.0.0.0, Copyright © 2009-2021 The Bitcoin Core developers, 2014-2021 The Dash Core developers, 2015-2021 The Passion Core developers</string>
 
   <key>CFBundleShortVersionString</key>
-  <string>5.0.99</string>
+  <string>1.0.0</string>
 
   <key>CFBundleVersion</key>
-  <string>5.0.99</string>
+  <string>1.0.0</string>
 
   <key>CFBundleSignature</key>
   <string>????</string>

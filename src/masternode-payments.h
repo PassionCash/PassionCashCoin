@@ -244,6 +244,8 @@ public:
         } catch (...) {
             nMessVersion = MessageVersion::MESS_VER_STRMESS;
         }
+
+        //READWRITE(payeeLevel);
     }
 
     std::string ToString()

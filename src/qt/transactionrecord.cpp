@@ -48,19 +48,52 @@ bool TransactionRecord::decomposeCoinStake(const CWallet* wallet, const CWalletT
             sub.address = EncodeDestination(address);
             sub.credit = nCredit - nDebit;
         }
+        parts.append(sub);
+    }
+    //Masternode reward
+    CAmount blockvalue = GetBlockValue(chainActive.Height()-wtx.GetDepthInMainChain());
+    CAmount val_lev1 = GetMasternodePayment(1,blockvalue);
+    CAmount val_lev2 = GetMasternodePayment(2,blockvalue);
+    CAmount val_lev3 = GetMasternodePayment(3,blockvalue);
+    CAmount val_lev4 = GetMasternodePayment(4,blockvalue);
+    CAmount val_devfee  = (blockvalue * Params().GetConsensus().nDevFee) / 100;
+
+    CTxDestination destMN;
+    if(wtx.tx->vout.size() >=2) {
+        int nIndexMN = (int) wtx.tx->vout.size();
+        for(int i = 2; i < nIndexMN; i++) {
+            isminetype mine;              
+            if (ExtractDestination(wtx.tx->vout[i].scriptPubKey, destMN) && (mine = IsMine(*wallet, destMN))){
+                TransactionRecord subw(hash, wtx.GetTxTime(), wtx.tx->GetTotalSize());
+                subw.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;                    
+                subw.address = EncodeDestination(destMN);
+                subw.credit = wtx.tx->vout[i].nValue;
+                if(subw.credit == val_lev1) {
+                    subw.type = TransactionRecord::MNRewardLevel1;
+                } else if(subw.credit == val_lev2) {
+                    subw.type = TransactionRecord::MNRewardLevel2;
+                } else if(subw.credit == val_lev3) {
+                    subw.type = TransactionRecord::MNRewardLevel3;
+                } else if(subw.credit == val_lev4) {
+                    subw.type = TransactionRecord::MNRewardLevel4;
+                } else if(subw.credit == val_devfee) {
+                    subw.type = TransactionRecord::DeveloperFee;
+                }                    
+                parts.append(subw);
+            }
+        }
     } else {
-        //Masternode reward
-        CTxDestination destMN;
         int nIndexMN = (int) wtx.tx->vout.size() - 1;
-        if (ExtractDestination(wtx.tx->vout[nIndexMN].scriptPubKey, destMN) && (mine = IsMine(*wallet, destMN)) ) {
-            sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
-            sub.type = TransactionRecord::MNReward;
-            sub.address = EncodeDestination(destMN);
-            sub.credit = wtx.tx->vout[nIndexMN].nValue;
+        isminetype mine = IsMine(*wallet, destMN);
+        if (ExtractDestination(wtx.tx->vout[nIndexMN].scriptPubKey, destMN) && mine ) {
+            TransactionRecord subw(hash, wtx.GetTxTime(), wtx.tx->GetTotalSize());
+            subw.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
+            subw.type = TransactionRecord::Other;
+            subw.address = EncodeDestination(destMN);
+            subw.credit = wtx.tx->vout[nIndexMN].nValue;
+            parts.append(subw);
         }
     }
-
-    parts.append(sub);
     return true;
 }
 
@@ -600,6 +633,11 @@ void TransactionRecord::updateStatus(const CWalletTx& wtx, int chainHeight)
             type == TransactionRecord::StakeMint ||
             type == TransactionRecord::StakeZPASSION ||
             type == TransactionRecord::MNReward ||
+            type == TransactionRecord::MNRewardLevel1 ||
+            type == TransactionRecord::MNRewardLevel2 ||
+            type == TransactionRecord::MNRewardLevel3 ||
+            type == TransactionRecord::MNRewardLevel4 ||
+            type == TransactionRecord::DeveloperFee ||
             type == TransactionRecord::StakeDelegated ||
             type == TransactionRecord::StakeHot) {
 

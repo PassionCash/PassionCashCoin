@@ -115,6 +115,13 @@ QVariant MNModel::data(const QModelIndex &index, int role) const
                 }
                 return true;
             }
+            case MNLEVEL:{
+                CMasternode* mn = nodes.values().value(row).second;
+                CTxIn vin(mn->GetVin().prevout);
+                int level = CMasternode::Level(mn->GetVin(),chainActive.Height());
+                return (isAvailable) ? "Level: " + QString::number(level) : "Not available";
+
+            }
         }
     }
     return QVariant();

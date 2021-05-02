@@ -42,11 +42,16 @@ private:
     QPushButton* icConfirm4;
     SnackBar *snackBar = nullptr;
     int pos = 0;
+    CAmount mnLevelValue = 0;
 
     WalletModel *walletModel = nullptr;
     bool createMN();
     void inform(QString text);
     void initBtn(std::initializer_list<QPushButton*> args);
+    void onRadioLevel1_clicked();
+    void onRadioLevel2_clicked();
+    void onRadioLevel3_clicked();
+    void onRadioLevel4_clicked();
 };
 
 #endif // MASTERNODEWIZARDDIALOG_H

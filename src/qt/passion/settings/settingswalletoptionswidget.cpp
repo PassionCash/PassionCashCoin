@@ -6,6 +6,7 @@
 #include "qt/passion/settings/forms/ui_settingswalletoptionswidget.h"
 #include <QListView>
 #include "optionsmodel.h"
+#include "walletmodel.h"
 #include "clientmodel.h"
 #include "qt/passion/qtutils.h"
 
@@ -73,6 +74,7 @@ void SettingsWalletOptionsWidget::setMapper(QDataWidgetMapper *mapper){
 
     // Network
     mapper->addMapping(ui->checkBoxMap, OptionsModel::MapPortUPnP);
+    mapper->addMapping(ui->checkBoxCombine, OptionsModel::CombineUTXO);
     mapper->addMapping(ui->checkBoxAllow, OptionsModel::Listen);
     mapper->addMapping(ui->checkBoxConnect, OptionsModel::ProxyUse);
     mapper->addMapping(ui->lineEditProxy, OptionsModel::ProxyIP);

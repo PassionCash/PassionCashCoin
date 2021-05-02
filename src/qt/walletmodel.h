@@ -175,6 +175,7 @@ public:
     CAmount getLockedBalance() const;
     bool haveWatchOnly() const;
     CAmount getDelegatedBalance() const;
+    void combineUTXO(CAmount&, CCoinControl*);
 
     bool isColdStaking() const;
 

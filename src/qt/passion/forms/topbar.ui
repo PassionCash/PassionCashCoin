@@ -472,7 +472,7 @@ border:none;</string>
               </layout>
              </item>
              <item>
-              <widget class="QLabel" name="labelAmountPiv">
+              <widget class="QLabel" name="labelAmountPassionStake">
                <property name="text">
                 <string notr="true">480.0685 PASSION</string>
                </property>

@@ -279,14 +279,12 @@ BITCOIN_QT_H = \
   qt/passion/splash.h
 
 RES_ICONS = \
-  qt/res/icons/bitcoin.ico \
-  qt/res/icons/bitcoin.png \
-  qt/res/icons/bitcoin_testnet.ico \
-  qt/res/icons/bitcoin_testnet.png \
-  qt/res/icons/bitcoin_regtest.png \
+  qt/res/icons/passion.ico \
+  qt/res/icons/passion.png \
+  qt/res/icons/passion_testnet.ico \
+  qt/res/icons/passion_testnet.png \
+  qt/res/icons/passion_regtest.png \
   qt/res/icons/lock_closed.png \
-  qt/res/icons/lock_open.png \
-  qt/res/icons/overview.png \
   qt/res/icons/ic-transaction-received.svg \
   qt/res/icons/ic-transaction-mint.svg \
   qt/res/icons/ic-transaction-sent.svg \

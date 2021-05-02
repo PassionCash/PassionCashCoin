@@ -599,7 +599,7 @@ passiond_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 passiond_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-passiond_SOURCES += passion-res.rc
+passiond_SOURCES += passiond-res.rc
 endif
 passiond_LDADD = \
   $(LIBBITCOIN_SERVER) \

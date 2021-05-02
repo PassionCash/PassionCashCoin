@@ -232,7 +232,6 @@ UniValue getmasternodecount (const JSONRPCRequest& request)
         UniValue inqueue_item{UniValue::VOBJ};
 
         int inqueue_count = 0u;
-
         mnodeman.GetNextMasternodeInQueueForPayment(pChainTip->nHeight,l, true, nCount, pChainTip);
 
         inqueue_item.pushKV("level", l);
@@ -532,22 +531,6 @@ UniValue getmasternodeoutputs (const JSONRPCRequest& request)
             "\nExamples:\n" +
             HelpExampleCli("getmasternodeoutputs", "") + HelpExampleRpc("getmasternodeoutputs", ""));
 
-    // Find possible candidates
-    /*
-    CWallet::AvailableCoinsFilter coinsFilter;
-    coinsFilter.fIncludeDelegated = false;
-    coinsFilter.nCoinType = ONLY_MN_OUTPUTS;
-    std::vector<COutput> possibleCoins;
-    pwalletMain->AvailableCoins(&possibleCoins, nullptr, coinsFilter);
-
-    UniValue ret(UniValue::VARR);
-    for (COutput& out : possibleCoins) {
-        UniValue obj(UniValue::VOBJ);
-        obj.pushKV("txhash", out.tx->GetHash().ToString());
-        obj.pushKV("outputidx", out.i);
-        ret.push_back(obj);
-    }
-*/
     CWallet::AvailableCoinsFilter coinsFilter;
     coinsFilter.fIncludeDelegated = false;
     coinsFilter.nCoinType = ONLY_MN_OUTPUTS;
@@ -656,13 +639,13 @@ UniValue getmasternodestatus (const JSONRPCRequest& request)
         throw JSONRPCError(RPC_MISC_ERROR, _("Active Masternode not initialized."));
 
     CMasternode* pmn = mnodeman.Find(activeMasternode.vin->prevout);
-
     if (pmn) {
         UniValue mnObj(UniValue::VOBJ);
         mnObj.pushKV("txhash", activeMasternode.vin->prevout.hash.ToString());
         mnObj.pushKV("outputidx", (uint64_t)activeMasternode.vin->prevout.n);
         mnObj.pushKV("netaddr", activeMasternode.service.ToString());
         mnObj.pushKV("addr", EncodeDestination(pmn->pubKeyCollateralAddress.GetID()));
+        mnObj.pushKV("Level", CMasternode::Level(*(activeMasternode.vin),1));
         mnObj.pushKV("status", activeMasternode.GetStatus());
         mnObj.pushKV("message", activeMasternode.GetStatusMessage());
         return mnObj;

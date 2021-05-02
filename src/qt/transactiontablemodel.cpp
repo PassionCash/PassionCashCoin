@@ -455,6 +455,16 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
         return tr("Received with");
     case TransactionRecord::MNReward:
         return tr("Masternode Reward");
+    case TransactionRecord::MNRewardLevel1:
+        return tr("Masternode Reward Level 1");
+    case TransactionRecord::MNRewardLevel2:
+        return tr("Masternode Reward Level 2");
+    case TransactionRecord::MNRewardLevel3:
+        return tr("Masternode Reward Level 3");
+    case TransactionRecord::MNRewardLevel4:
+        return tr("Masternode Reward Level 4");
+    case TransactionRecord::DeveloperFee:
+        return tr("Development Fee");
     case TransactionRecord::RecvFromOther:
         return tr("Received from");
     case TransactionRecord::SendToAddress:
@@ -513,6 +523,11 @@ QVariant TransactionTableModel::txAddressDecoration(const TransactionRecord* wtx
     case TransactionRecord::StakeMint:
     case TransactionRecord::StakeZPASSION:
     case TransactionRecord::MNReward:
+    case TransactionRecord::MNRewardLevel1:
+    case TransactionRecord::MNRewardLevel2:
+    case TransactionRecord::MNRewardLevel3:
+    case TransactionRecord::MNRewardLevel4:
+    case TransactionRecord::DeveloperFee:
         return QIcon(":/icons/tx_mined");
     case TransactionRecord::RecvWithAddress:
     case TransactionRecord::RecvFromOther:
@@ -540,6 +555,10 @@ QString TransactionTableModel::formatTxToAddress(const TransactionRecord* wtx, b
         return QString::fromStdString(wtx->address) + watchAddress;
     case TransactionRecord::RecvWithAddress:
     case TransactionRecord::MNReward:
+    case TransactionRecord::MNRewardLevel1:
+    case TransactionRecord::MNRewardLevel2:
+    case TransactionRecord::MNRewardLevel3:
+    case TransactionRecord::MNRewardLevel4:
     case TransactionRecord::SendToAddress:
     case TransactionRecord::Generated:
     case TransactionRecord::StakeMint:
@@ -592,7 +611,13 @@ QVariant TransactionTableModel::addressColor(const TransactionRecord* wtx) const
     case TransactionRecord::RecvWithAddress:
     case TransactionRecord::SendToAddress:
     case TransactionRecord::Generated:
-    case TransactionRecord::MNReward: {
+    case TransactionRecord::MNReward:
+    case TransactionRecord::MNRewardLevel1:
+    case TransactionRecord::MNRewardLevel2:
+    case TransactionRecord::MNRewardLevel3:
+    case TransactionRecord::MNRewardLevel4:
+    case TransactionRecord::DeveloperFee:
+    {
         QString label = walletModel->getAddressTableModel()->labelForAddress(QString::fromStdString(wtx->address));
         if (label.isEmpty())
             return COLOR_BAREADDRESS;
@@ -719,7 +744,13 @@ QVariant TransactionTableModel::data(const QModelIndex& index, int role) const
     case Qt::ForegroundRole:
         // Minted
         if (rec->type == TransactionRecord::Generated || rec->type == TransactionRecord::StakeMint ||
-                rec->type == TransactionRecord::StakeZPASSION || rec->type == TransactionRecord::MNReward) {
+                rec->type == TransactionRecord::StakeZPASSION || 
+                rec->type == TransactionRecord::MNReward ||
+                rec->type == TransactionRecord::MNRewardLevel1 ||
+                rec->type == TransactionRecord::MNRewardLevel2 ||
+                rec->type == TransactionRecord::MNRewardLevel3 ||
+                rec->type == TransactionRecord::MNRewardLevel4 ||
+                rec->type == TransactionRecord::DeveloperFee) {
             if (rec->status.status == TransactionStatus::Conflicted || rec->status.status == TransactionStatus::NotAccepted)
                 return COLOR_ORPHAN;
             else

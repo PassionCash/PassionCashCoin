@@ -11,6 +11,7 @@
 #include "guiconstants.h"
 #include "optionsmodel.h"
 #include "recentrequeststablemodel.h"
+#include "qt/passion/guitransactionsutils.h"
 #include "transactiontablemodel.h"
 #include "init.h" // for ShutdownRequested(). Future: move to an interface wrapper
 
@@ -137,6 +138,25 @@ CAmount WalletModel::getBalance(const CCoinControl* coinControl, bool fIncludeDe
     }
 
     return wallet->GetAvailableBalance(fIncludeDelegated, fIncludeShielded) - (fUnlockedOnly ? wallet->GetLockedCoins() : CAmount(0));
+}
+void WalletModel::combineUTXO(CAmount& value, CCoinControl* coinControl) {
+    CWallet::AvailableCoinsFilter coinsFilter;
+    coinsFilter.fIncludeDelegated = true;
+    std::vector<COutput> vCoins;
+    wallet->AvailableCoins(&vCoins, nullptr, coinsFilter);
+    int count = 0;
+    for (const COutput& out : vCoins) {
+        bool fSkip = isLockedCoin(out.tx->GetHash(), out.i);
+        if (out.fSpendable && !fSkip)
+            if(out.tx->tx->vout[out.i].nValue < (20*COIN)) {
+                count++;
+                if(count > 400) 
+                    break;
+                value += out.tx->tx->vout[out.i].nValue;      
+                BaseOutPoint p(out.tx->GetHash(),out.i);
+                coinControl->Select(p,out.tx->tx->vout[out.i].nValue);
+        }
+    }
 }
 
 CAmount WalletModel::getUnlockedBalance(const CCoinControl* coinControl, bool fIncludeDelegated, bool fIncludeShielded) const

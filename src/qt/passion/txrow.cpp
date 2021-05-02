@@ -77,6 +77,11 @@ void TxRow::setType(bool isLightTheme, int type, bool isConfirmed)
         case TransactionRecord::Generated:
         case TransactionRecord::StakeZPASSION:
         case TransactionRecord::MNReward:
+        case TransactionRecord::MNRewardLevel1:
+        case TransactionRecord::MNRewardLevel2:
+        case TransactionRecord::MNRewardLevel3:
+        case TransactionRecord::MNRewardLevel4:
+        case TransactionRecord::DeveloperFee:
         case TransactionRecord::StakeMint:
             path = "://ic-transaction-staked";
             css = "text-list-amount-receive";

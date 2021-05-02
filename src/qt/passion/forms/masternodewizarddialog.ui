@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>715</width>
-    <height>602</height>
+    <width>809</width>
+    <height>695</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -713,7 +713,7 @@
           <item>
            <widget class="QLabel" name="labelMessage1a">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;To create a Passion Masternode you must dedicate 10,000 PASSION (the unit of Passion) to the network (however, these coins are still yours and will never leave your possession). &lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;You can deactivate the node and unlock the coins at any time.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;To create a Passion Masternode you must dedicate a level specific amout of PASSION (the unit of Passion) to the network (however, these coins are still yours and will never leave your possession). &lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;You can deactivate the node and unlock the coins at any time.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignHCenter|Qt::AlignTop</set>
@@ -771,7 +771,7 @@
          </layout>
         </widget>
         <widget class="QWidget" name="page_3">
-         <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0,3">
+         <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0,0,0,3,0,0">
           <property name="spacing">
            <number>6</number>
           </property>
@@ -837,6 +837,74 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Please select a Masternode-Level</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QRadioButton" name="radioLevel1">
+              <property name="text">
+               <string>Level 1</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioLevel2">
+              <property name="text">
+               <string>Level 2</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioLevel3">
+              <property name="text">
+               <string>Level 3</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioLevel4">
+              <property name="text">
+               <string>Level 4</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
               <height>40</height>
              </size>
             </property>
@@ -845,7 +913,7 @@
           <item>
            <widget class="QLabel" name="labelMessage3">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A transaction of 10,000 PASSION will be made&lt;/p&gt;&lt;p&gt;to a new empty address in your wallet.&lt;/p&gt;&lt;p&gt;The Address is labeled under the master node's name.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A transaction selected level will be made&lt;/p&gt;&lt;p&gt; Level 1 -&gt; 1000 PASSION&lt;/p&gt;&lt;p&gt; Level 2 -&gt; 5000 PASSION&lt;/p&gt;&lt;p&gt; Level 3 -&gt; 10000 PASSION&lt;/p&gt;&lt;p&gt; Level 4 -&gt; 25000 PASSION&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignHCenter|Qt::AlignTop</set>

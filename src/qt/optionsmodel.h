@@ -33,6 +33,7 @@ public:
         MinimizeToTray,      // bool
         MapPortUPnP,         // bool
         MinimizeOnClose,     // bool
+        CombineUTXO,     // bool
         ProxyUse,            // bool
         ProxyIP,             // QString
         ProxyPort,           // int
@@ -82,6 +83,7 @@ public:
     /* Explicit getters */
     bool isHideCharts() { return fHideCharts; }
     bool getMinimizeToTray() { return fMinimizeToTray; }
+    bool getCombineUTXO() { return fCombineUTXO; }
     bool getMinimizeOnClose() { return fMinimizeOnClose; }
     int getDisplayUnit() { return nDisplayUnit; }
     QString getThirdPartyTxUrls() { return strThirdPartyTxUrls; }
@@ -117,6 +119,7 @@ public:
 private:
     /* Qt-only settings */
     bool fMinimizeToTray;
+    bool fCombineUTXO;
     bool fMinimizeOnClose;
     QString language;
     int nDisplayUnit;

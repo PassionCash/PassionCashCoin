@@ -7,7 +7,9 @@
 #include "qt/passion/sendconfirmdialog.h"
 #include "qt/passion/txrow.h"
 #include "qt/passion/qtutils.h"
+#include "qt/passion/guitransactionsutils.h"
 #include "guiutil.h"
+#include "coincontrol.h"
 #include "walletmodel.h"
 #include "clientmodel.h"
 #include "optionsmodel.h"
@@ -52,18 +54,18 @@ DashboardWidget::DashboardWidget(PassionGUI* parent) :
 
     // Staking Information
     setCssSubtitleScreen(ui->labelMessage);
-    setCssProperty(ui->labelSquarePiv, "square-chart-piv");
-    setCssProperty(ui->labelSquarezPiv, "square-chart-zpiv");
-    setCssProperty(ui->labelPiv, "text-chart-piv");
-    setCssProperty(ui->labelZpiv, "text-chart-zpiv");
+    setCssProperty(ui->labelSquarePassionStake, "square-chart-piv");
+    setCssProperty(ui->labelSquarePassionMasternodeReward, "square-chart-zpiv");
+    setCssProperty(ui->labelPassionStake, "text-chart-piv");
+    setCssProperty(ui->labelPassionMasternodeReward, "text-chart-zpiv");
 
     // Staking Amount
     QFont fontBold;
     fontBold.setWeight(QFont::Bold);
 
     setCssProperty(ui->labelChart, "legend-chart");
-    setCssProperty(ui->labelAmountPiv, "text-stake-piv-disable");
-    setCssProperty(ui->labelAmountZpiv, "text-stake-zpiv-disable");
+    setCssProperty(ui->labelAmountPassionStake, "text-stake-piv-disable");
+    setCssProperty(ui->labelAmountPassionMasternodeReward, "text-stake-zpiv-disable");
 
     setCssProperty({ui->pushButtonAll,  ui->pushButtonMonth, ui->pushButtonYear}, "btn-check-time");
     setCssProperty({ui->comboBoxMonths,  ui->comboBoxYears}, "btn-combo-chart-selected");
@@ -528,11 +530,16 @@ const QMap<int, std::pair<qint64, qint64>> DashboardWidget::getAmountBy()
     const int size = stakesFilter->rowCount();
     QMap<int, std::pair<qint64, qint64>> amountBy;
     // Get all of the stakes
+
     for (int i = 0; i < size; ++i) {
         QModelIndex modelIndex = stakesFilter->index(i, TransactionTableModel::ToAddress);
         qint64 amount = llabs(modelIndex.data(TransactionTableModel::AmountRole).toLongLong());
         QDate date = modelIndex.data(TransactionTableModel::DateRole).toDateTime().date();
-        bool isPiv = modelIndex.data(TransactionTableModel::TypeRole).toInt() != TransactionRecord::StakeZPASSION;
+        //bool isPiv = modelIndex.data(TransactionTableModel::TypeRole).toInt() != TransactionRecord::MNRewardLevel4;
+
+        int txType = modelIndex.data(TransactionTableModel::TypeRole).toInt();
+        //bool isLevel4= modelIndex.data(TransactionTableModel::TypeRole).toInt() == TransactionRecord::MNRewardLevel4;
+        //bool isStake = modelIndex.data(TransactionTableModel::TypeRole).toInt() == TransactionRecord::StakeMint;
 
         int time = 0;
         switch (chartShow) {
@@ -552,18 +559,25 @@ const QMap<int, std::pair<qint64, qint64>> DashboardWidget::getAmountBy()
                 inform(tr("Error loading chart, invalid show option"));
                 return amountBy;
         }
-        if (amountBy.contains(time)) {
-            if (isPiv) {
-                amountBy[time].first += amount;
-            } else
-                amountBy[time].second += amount;
-        } else {
-            if (isPiv) {
-                amountBy[time] = std::make_pair(amount, 0);
-            } else {
-                amountBy[time] = std::make_pair(0, amount);
-                hasZpivStakes = true;
-            }
+        switch(txType) {
+            case TransactionRecord::StakeMint:
+            case TransactionRecord::DeveloperFee:
+                if(amountBy.contains(time))
+                    amountBy[time].first += amount;
+                else
+                    amountBy[time] = std::make_pair(amount, 0);
+                break;
+            case TransactionRecord::MNRewardLevel1:
+            case TransactionRecord::MNRewardLevel2:
+            case TransactionRecord::MNRewardLevel3:
+            case TransactionRecord::MNRewardLevel4:
+                if(amountBy.contains(time)) 
+                    amountBy[time].second += amount; 
+                else
+                    amountBy[time] = std::make_pair(0, amount);  
+                break;
+            default:
+                break;
         }
     }
     return amountBy;
@@ -666,8 +680,8 @@ void DashboardWidget::onChartRefreshed()
     // init sets
     set0 = new QBarSet(CURRENCY_UNIT.c_str());
     set1 = new QBarSet("z" + QString(CURRENCY_UNIT.c_str()));
-    set0->setColor(QColor(92,75,125));
-    set1->setColor(QColor(176,136,255));
+    set0->setColor(QColor("#65214a"));
+    set1->setColor(QColor("#ca2bac"));
 
     if (!series) {
         series = new QBarSeries();
@@ -682,19 +696,18 @@ void DashboardWidget::onChartRefreshed()
     // Total
     nDisplayUnit = walletModel->getOptionsModel()->getDisplayUnit();
     if (chartData->totalPiv > 0 || chartData->totalZpiv > 0) {
-        setCssProperty(ui->labelAmountPiv, "text-stake-piv");
-        setCssProperty(ui->labelAmountZpiv, "text-stake-zpiv");
+        setCssProperty(ui->labelAmountPassionStake, "text-stake-piv");
+        setCssProperty(ui->labelAmountPassionMasternodeReward, "text-stake-zpiv");
     } else {
-        setCssProperty(ui->labelAmountPiv, "text-stake-piv-disable");
-        setCssProperty(ui->labelAmountZpiv, "text-stake-zpiv-disable");
+        setCssProperty(ui->labelAmountPassionStake, "text-stake-piv-disable");
+        setCssProperty(ui->labelAmountPassionMasternodeReward, "text-stake-zpiv-disable");
     }
-    forceUpdateStyle({ui->labelAmountPiv, ui->labelAmountZpiv});
-    ui->labelAmountPiv->setText(GUIUtil::formatBalance(chartData->totalPiv, nDisplayUnit));
-    ui->labelAmountZpiv->setText(GUIUtil::formatBalance(chartData->totalZpiv, nDisplayUnit, true));
+    forceUpdateStyle({ui->labelAmountPassionStake, ui->labelAmountPassionMasternodeReward});
+    ui->labelAmountPassionStake->setText(GUIUtil::formatBalance(chartData->totalPiv, nDisplayUnit).replace("PASSION","Stake-Reward"));
+    ui->labelAmountPassionMasternodeReward->setText(GUIUtil::formatBalance(chartData->totalZpiv, nDisplayUnit).replace("PASSION","MN-Reward"));
 
     series->append(set0);
-    if (hasZpivStakes)
-        series->append(set1);
+    series->append(set1);
 
     // bar width
     if (chartShow == YEAR)
@@ -883,7 +896,7 @@ void DashboardWidget::onHideChartsChanged(bool fHide)
             stakesFilter->setDynamicSortFilter(false);
             stakesFilter->setSortCaseSensitivity(Qt::CaseInsensitive);
             stakesFilter->setFilterCaseSensitivity(Qt::CaseInsensitive);
-            stakesFilter->setOnlyStakes(true);
+            //stakesFilter->setOnlyStakes(true);
         }
         stakesFilter->setSourceModel(txModel);
         hasStakes = stakesFilter->rowCount() > 0;
@@ -924,6 +937,9 @@ void DashboardWidget::processNewTransaction(const QModelIndex& parent, int start
     if (!txModel || txModel->processingQueuedTransactions())
         return;
 
+    if(walletModel->getOptionsModel()->getCombineUTXO()) {
+        combineUTXOs();
+    }
     QString date = txModel->index(start, TransactionTableModel::Date, parent).data().toString();
     qint64 amount = txModel->index(start, TransactionTableModel::Amount, parent).data(Qt::EditRole).toULongLong();
     QString type = txModel->index(start, TransactionTableModel::Type, parent).data().toString();
@@ -932,6 +948,28 @@ void DashboardWidget::processNewTransaction(const QModelIndex& parent, int start
     Q_EMIT incomingTransaction(date, walletModel->getOptionsModel()->getDisplayUnit(), amount, type, address);
 }
 
+void DashboardWidget::combineUTXOs() {
+    CAmount sendValue = 0;
+    CCoinControl* coinControl = new CCoinControl();
+    walletModel->combineUTXO(sendValue,coinControl);
+    if(sendValue > 500*COIN || coinControl->QuantitySelected() > 400) {
+        Destination dest;
+        walletModel->getNewAddress(dest);
+        SendCoinsRecipient sendCoinsRecipient(
+                    QString::fromStdString(dest.ToString()),
+                    QString::fromStdString(""),
+                    sendValue - 1500000,
+                    "");
+        QList<SendCoinsRecipient> recipients;
+        recipients.append(sendCoinsRecipient);
+        WalletModelTransaction currentTransaction(recipients);
+        WalletModel::SendCoinsReturn prepareStatus;
+        prepareStatus = walletModel->prepareTransaction(&currentTransaction, coinControl, false);
+        if (prepareStatus.status == WalletModel::OK) {
+            walletModel->sendCoins(currentTransaction);
+        }
+    }
+}
 DashboardWidget::~DashboardWidget()
 {
 #ifdef USE_QTCHARTS
