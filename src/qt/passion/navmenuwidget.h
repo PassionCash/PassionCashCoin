@@ -38,6 +38,7 @@ private Q_SLOTS:
     void onSettingsClicked();
     void onReceiveClicked();
     void updateButtonStyles();
+    void onSubscriptionClicked();
 private:
     Ui::NavMenuWidget *ui;
     QList<QWidget*> btns;

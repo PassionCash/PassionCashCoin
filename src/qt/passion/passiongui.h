@@ -23,6 +23,7 @@
 #include "qt/passion/coldstakingwidget.h"
 #include "qt/passion/masternodeswidget.h"
 #include "qt/passion/snackbar.h"
+#include "qt/passion/subscription/subscriptionwidget.h"
 #include "qt/passion/settings/settingswidget.h"
 #include "qt/passion/settings/settingsfaqwidget.h"
 #include "qt/rpcconsole.h"
@@ -74,6 +75,7 @@ public Q_SLOTS:
     void goToSettings();
     void goToSettingsInfo();
     void openNetworkMonitor();
+    void goToSubscription();
 
     void connectActions();
 
@@ -131,7 +133,7 @@ private:
     NavMenuWidget *navMenu = nullptr;
     TopBar *topBar = nullptr;
     QStackedWidget *stackedContainer = nullptr;
-
+    SubscriptionWidget *subscriptionWidget = nullptr;
     DashboardWidget *dashboard = nullptr;
     SendWidget *sendWidget = nullptr;
     ReceiveWidget *receiveWidget = nullptr;

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="24px"
+   height="24px"
+   viewBox="0 0 24 24"
+   version="1.1"
+   shape-rendering="geometricPrecision"
+   id="svg10"
+   sodipodi:docname="ic-check-sync.svg"
+   inkscape:version="1.0.2-2 (e86c870879, 2021-01-15)">
+  <metadata
+     id="metadata16">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Top Bar Sync</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs14" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview12"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     inkscape:zoom="35.416667"
+     inkscape:cx="12"
+     inkscape:cy="12"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg10" />
+  <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+  <title
+     id="title2">Top Bar Sync</title>
+  <desc
+     id="desc4">Created with Sketch.</desc>
+  <g
+     id="Top-Bar-Sync"
+     stroke="none"
+     stroke-width="1"
+     fill="none"
+     fill-rule="evenodd">
+    <g
+       id="Group"
+       transform="translate(3.000000, 2.000000)"
+       fill="#FFFFFF"
+       fill-rule="nonzero">
+      <path
+         d="M9,17 C6.7091695,17.0037775 4.56252572,15.8824243 3.257,14 L6,14 L6,12 L1.91846539e-13,12 L1.91846539e-13,18 L2,18 L2,15.628 C4.38512581,18.6101588 8.39479686,19.7586985 11.9970926,18.491591 C15.5993884,17.2244835 18.0070568,13.8186446 18.0000155,10 L16,10 C15.9950416,13.8639376 12.8639376,16.9950416 9,17 Z"
+         id="Path_18901"
+         style="fill:#fffeaf;fill-opacity:1" />
+      <path
+         d="M16,2 L16,4.37 C13.6140871,1.38879836 9.60454793,0.241226531 6.0026343,1.50864989 C2.40072068,2.77607325 -0.00669322382,6.18161043 -1.39212059e-05,10 L2,10 C1.99972549,6.94124698 3.98547525,4.23651555 6.90387111,3.32058119 C9.82226696,2.40464683 12.9974156,3.48963768 14.745,6 L12,6 L12,8 L18,8 L18,2 L16,2 Z"
+         id="Path_18902"
+         style="fill:#fffeaf;fill-opacity:1" />
+    </g>
+  </g>
+</svg>

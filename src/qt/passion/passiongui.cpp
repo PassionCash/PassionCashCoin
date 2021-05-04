@@ -127,6 +127,7 @@ PassionGUI::PassionGUI(const NetworkStyle* networkStyle, QWidget* parent) :
         masterNodesWidget = new MasterNodesWidget(this);
         coldStakingWidget = new ColdStakingWidget(this);
         settingsWidget = new SettingsWidget(this);
+        subscriptionWidget = new SubscriptionWidget(this);
 
         // Add to parent
         stackedContainer->addWidget(dashboard);
@@ -136,7 +137,9 @@ PassionGUI::PassionGUI(const NetworkStyle* networkStyle, QWidget* parent) :
         stackedContainer->addWidget(masterNodesWidget);
         stackedContainer->addWidget(coldStakingWidget);
         stackedContainer->addWidget(settingsWidget);
+        stackedContainer->addWidget(subscriptionWidget);
         stackedContainer->setCurrentWidget(dashboard);
+
 
     } else
 #endif
@@ -197,6 +200,7 @@ void PassionGUI::connectActions()
     connect(settingsWidget, &SettingsWidget::showHide, this, &PassionGUI::showHide);
     connect(sendWidget, &SendWidget::showHide, this, &PassionGUI::showHide);
     connect(receiveWidget, &ReceiveWidget::showHide, this, &PassionGUI::showHide);
+    connect(subscriptionWidget, &SubscriptionWidget::showHide, this, &PassionGUI::showHide);
     connect(addressesWidget, &AddressesWidget::showHide, this, &PassionGUI::showHide);
     connect(masterNodesWidget, &MasterNodesWidget::showHide, this, &PassionGUI::showHide);
     connect(masterNodesWidget, &MasterNodesWidget::execDialog, this, &PassionGUI::execDialog);
@@ -480,6 +484,10 @@ void PassionGUI::goToDashboard()
     }
 }
 
+void PassionGUI::goToSubscription(){
+    showTop(subscriptionWidget);
+}
+
 void PassionGUI::goToSend()
 {
     showTop(sendWidget);
@@ -613,6 +621,7 @@ bool PassionGUI::addWallet(const QString& name, WalletModel* walletModel)
     topBar->setWalletModel(walletModel);
     receiveWidget->setWalletModel(walletModel);
     sendWidget->setWalletModel(walletModel);
+    subscriptionWidget->setWalletModel(walletModel);
     addressesWidget->setWalletModel(walletModel);
     masterNodesWidget->setWalletModel(walletModel);
     coldStakingWidget->setWalletModel(walletModel);
@@ -627,6 +636,7 @@ bool PassionGUI::addWallet(const QString& name, WalletModel* walletModel)
     connect(receiveWidget, &ReceiveWidget::message,this, &PassionGUI::message);
     connect(addressesWidget, &AddressesWidget::message,this, &PassionGUI::message);
     connect(settingsWidget, &SettingsWidget::message, this, &PassionGUI::message);
+    connect(subscriptionWidget, &SubscriptionWidget::message,this, &PassionGUI::message);
 
     // Pass through transaction notifications
     connect(dashboard, &DashboardWidget::incomingTransaction, this, &PassionGUI::incomingTransaction);

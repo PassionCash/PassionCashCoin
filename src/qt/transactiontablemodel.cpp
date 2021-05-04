@@ -559,6 +559,7 @@ QString TransactionTableModel::formatTxToAddress(const TransactionRecord* wtx, b
     case TransactionRecord::MNRewardLevel2:
     case TransactionRecord::MNRewardLevel3:
     case TransactionRecord::MNRewardLevel4:
+    case TransactionRecord::DeveloperFee:
     case TransactionRecord::SendToAddress:
     case TransactionRecord::Generated:
     case TransactionRecord::StakeMint:

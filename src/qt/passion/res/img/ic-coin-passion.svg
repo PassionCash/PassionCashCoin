@@ -1,142 +1,23 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.1"
-   id="Layer_1"
-   x="0px"
-   y="0px"
-   viewBox="0 0 30 30"
-   xml:space="preserve"
-   sodipodi:docname="ic-coin-passion.svg"
-   width="30"
-   height="30"
-   inkscape:version="1.0.1 (0767f8302a, 2020-10-17)"><metadata
-   id="metadata122"><rdf:RDF><cc:Work
-       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
-   id="defs120" /><sodipodi:namedview
-   pagecolor="#ffffff"
-   bordercolor="#666666"
-   borderopacity="1"
-   objecttolerance="10"
-   gridtolerance="10"
-   guidetolerance="10"
-   inkscape:pageopacity="0"
-   inkscape:pageshadow="2"
-   inkscape:window-width="1760"
-   inkscape:window-height="960"
-   id="namedview118"
-   showgrid="false"
-   inkscape:zoom="26.498137"
-   inkscape:cx="12.156311"
-   inkscape:cy="10.836998"
-   inkscape:window-x="67"
-   inkscape:window-y="27"
-   inkscape:window-maximized="1"
-   inkscape:current-layer="Layer_1" />
-<style
-   type="text/css"
-   id="style92">
-	.st0{fill:none;}
-	.st1{fill:#932178;}
-	.st2{fill:#FFFFFF;}
-	.st3{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.3.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#D6249E;}
+	.st1{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:2.528191e-02;stroke-miterlimit:10;}
 </style>
-<path
-   id="Rectangle_4543"
-   class="st0"
-   d="m -2.7,-3.3 h 30 v 30 h -30 z"
-   style="stroke-width:1.31579" />
-<circle
-   id="XMLID_295_"
-   class="st0"
-   cx="15.021218"
-   cy="15.037702"
-   r="15"
-   style="stroke-width:1.5" />
-<circle
-   id="XMLID_293_"
-   class="st1"
-   cx="15.021218"
-   cy="15.037702"
-   r="15"
-   style="stroke-width:1.5" />
-<g
-   id="XMLID_292_"
-   transform="matrix(1.5,0,0,1.5,-2.52878,-3.2622978)">
-	<circle
-   class="st1"
-   cx="11.7"
-   cy="12.2"
-   r="8.8999996"
-   id="circle97" />
-	<path
-   class="st1"
-   d="m 11.7,3.4 c 4.8,0 8.8,3.9 8.8,8.8 0,4.9 -3.9,8.8 -8.8,8.8 C 6.8,21 3,17 3,12.2 3,7.4 6.9,3.4 11.7,3.4 m 0,-0.2 c -5,0 -9,4 -9,9 0,5 4,9 9,9 5,0 9,-4 9,-9 0,-5 -4,-9 -9,-9 z"
-   id="path99" />
+<circle id="XMLID_293_" class="st0" cx="11.7" cy="12.2" r="10"/>
+<g id="XMLID_17_">
+	<path id="Path_18985_11_" class="st1" d="M8.9,21.8C8.2,21.6,7.6,21.3,7,21v-7.9h6.2c0.2,0,0.4,0,0.6,0c2.1-0.1,3.7-1.7,3.5-3.5
+		c0-0.2,0-0.3,0-0.5c-0.2-1.8-2-3-4.1-2.9h-1.9H6.9L6.7,4.9h6.8c0.2,0,0.4,0,0.6,0c3,0.1,5.3,2.3,5.2,4.8c0,0.2,0,0.3,0,0.5
+		c-0.2,2.6-2.8,4.5-5.8,4.4H8.9V21.8z"/>
 </g>
-<g
-   id="XMLID_78_"
-   transform="matrix(1.5,0,0,1.5,-2.52878,-3.2622978)">
-	<path
-   id="Path_18985_112_"
-   class="st2"
-   d="M 9,20.6 C 8.4,20.4 7.5,20 7.5,20 v -7.4 h 4.8 c 0.2,0 0.3,0 0.5,0 1.6,-0.1 2.9,-1.3 2.7,-2.7 0,-0.1 0,-0.3 0,-0.4 C 15.3,8.1 13.9,7.1 12.3,7.3 H 10.8 3 c 0,0 0.4,-0.7 0.7,-1.1 h 8.8 c 0.2,0 0.3,0 0.5,0 2.3,0.1 4.1,1.8 4,3.7 0,0.1 0,0.3 0,0.4 -0.1,2 -2.1,3.5 -4.5,3.4 H 9 Z" />
+<g id="XMLID_16_">
+	<path id="Path_18985_10_" class="st1" d="M5.4,7.8h8.3H14c0.4,0,0.7,0.2,0.7,0.5v0.1c0,0.3-0.2,0.6-0.6,0.6C14,9,14,9,14,9H5.5
+		L5.4,7.8z"/>
 </g>
-<g
-   id="XMLID_77_"
-   transform="matrix(1.5,0,0,1.5,-2.52878,-3.2622978)">
-	<path
-   id="Path_18985_111_"
-   class="st2"
-   d="m 6.2,8.5 h 6.4 0.3 c 0.3,0 0.5,0.1 0.5,0.4 0,0 0,0 0,0.1 0,0.2 -0.2,0.4 -0.5,0.5 0,0 -0.1,0 -0.1,0 H 6.4 Z" />
-</g>
-<g
-   id="XMLID_76_"
-   transform="matrix(1.5,0,0,1.5,-2.52878,-3.2622978)">
-	<path
-   id="Path_18985_110_"
-   class="st2"
-   d="m 7.3,10.5 h 3.3 0.3 c 0.3,0 0.5,0.1 0.5,0.4 0,0 0,0 0,0.1 0,0.2 -0.2,0.4 -0.5,0.5 0,0 -0.1,0 -0.1,0 H 7.3 v -0.1 z" />
-</g>
-<g
-   id="XMLID_74_"
-   transform="matrix(1.5,0,0,1.5,-2.52878,-3.2622978)">
-	<path
-   id="Path_18985_109_"
-   class="st3"
-   d="m 16,15.7 v 0.4 0.6 c 0,0.1 0,0.2 0,0.3 0.1,1 0.8,1.7 1.6,1.7 0.1,0 0.2,0 0.2,0 0.8,-0.1 1.4,-0.9 1.4,-1.9 v 0.1 l -0.2,-4.3 0.7,-0.3 0.2,4.6 v 0 c 0,0.1 0,0.2 0,0.3 -0.1,1.4 -1.1,2.5 -2.3,2.4 -0.1,0 -0.2,0 -0.2,0 -1.2,-0.1 -2.1,-1.3 -2,-2.8 v -0.3" />
-	<g
-   id="XMLID_75_">
-		<path
-   id="Path_18985_108_"
-   class="st3"
-   d="m 19.7,12.3 v -1.4 l -0.3,0.3 -0.3,0.3 v 1" />
-		<path
-   id="Path_18985_104_"
-   class="st3"
-   d="m 17.4,11.5 1.6,0.1 0.3,-0.3 0.3,-0.3 -2.1,-0.1 c 0.2,-0.1 0.2,0 -0.1,0.6 z" />
-	</g>
-	<g
-   id="XMLID_80_">
-		<path
-   id="Path_18985_107_"
-   class="st3"
-   d="m 16,16.1 0.1,-1.6 -0.4,0.5 -0.3,0.3 v 1.3" />
-		<path
-   id="Path_18985_105_"
-   class="st3"
-   d="m 13.9,14.5 h 2.2 c 0,0 -0.3,0.4 -0.7,0.8 v -0.1 h -1.7" />
-	</g>
-	<path
-   id="Path_18985_106_"
-   class="st3"
-   d="m 14.9,14.5 h -0.4 -0.6 c -0.1,0 -0.2,0 -0.3,0 -1,-0.1 -1.7,-0.8 -1.7,-1.7 0,-0.1 0,-0.2 0,-0.2 0.1,-0.8 1,-1.4 2,-1.3 h -0.1 0.9 c 0,0 0.1,-0.2 0.2,-0.3 C 15,10.9 15,10.7 15,10.7 h -1.2 0.1 c -0.1,0 -0.2,0 -0.3,0 -1.4,0 -2.5,1.1 -2.5,2.2 0,0.1 0,0.2 0,0.2 0.1,1.2 1.3,2.1 2.7,2.1 h 0.3" />
+<g id="XMLID_15_">
+	<path id="Path_18985_9_" class="st1" d="M9.3,10.5h4.3h0.3c0.4,0,0.7,0.2,0.7,0.5v0.1c0,0.3-0.2,0.6-0.6,0.6h-0.1H9.4v-0.1
+		L9.3,10.5z"/>
 </g>
 </svg>

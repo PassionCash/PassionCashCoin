@@ -38,7 +38,9 @@ NavMenuWidget::NavMenuWidget(PassionGUI *mainWindow, QWidget *parent) :
     ui->btnColdStaking->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     ui->btnSettings->setProperty("name", "settings");
     ui->btnSettings->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    btns = {ui->btnDashboard, ui->btnSend, ui->btnReceive, ui->btnAddress, ui->btnMaster, ui->btnColdStaking, ui->btnSettings, ui->btnColdStaking};
+    ui->btnSubscription->setProperty("name", "wss");
+    ui->btnSubscription->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    btns = {ui->btnDashboard, ui->btnSend, ui->btnReceive, ui->btnAddress, ui->btnMaster, ui->btnColdStaking, ui->btnSettings, ui->btnSubscription, ui->btnColdStaking};
     onNavSelected(ui->btnDashboard, true);
 
     ui->scrollAreaNav->setWidgetResizable(true);
@@ -71,6 +73,7 @@ void NavMenuWidget::connectActions() {
     connect(ui->btnSettings, &QPushButton::clicked, this, &NavMenuWidget::onSettingsClicked);
     connect(ui->btnReceive, &QPushButton::clicked, this, &NavMenuWidget::onReceiveClicked);
     connect(ui->btnColdStaking, &QPushButton::clicked, this, &NavMenuWidget::onColdStakingClicked);
+    connect(ui->btnSubscription, &QPushButton::clicked,this,  &NavMenuWidget::onSubscriptionClicked);
 
     ui->btnDashboard->setShortcut(QKeySequence(SHORT_KEY + Qt::Key_1));
     ui->btnSend->setShortcut(QKeySequence(SHORT_KEY + Qt::Key_2));
@@ -79,6 +82,7 @@ void NavMenuWidget::connectActions() {
     ui->btnMaster->setShortcut(QKeySequence(SHORT_KEY + Qt::Key_5));
     ui->btnColdStaking->setShortcut(QKeySequence(SHORT_KEY + Qt::Key_6));
     ui->btnSettings->setShortcut(QKeySequence(SHORT_KEY + Qt::Key_7));
+    ui->btnSubscription->setShortcut(QKeySequence(SHORT_KEY + Qt::Key_8));
 }
 
 void NavMenuWidget::onSendClicked(){
@@ -114,6 +118,11 @@ void NavMenuWidget::onSettingsClicked(){
 void NavMenuWidget::onReceiveClicked(){
     window->goToReceive();
     onNavSelected(ui->btnReceive);
+}
+
+void NavMenuWidget::onSubscriptionClicked() {
+    window->goToSubscription();
+    onNavSelected(ui->btnSubscription);
 }
 
 void NavMenuWidget::onNavSelected(QWidget* active, bool startup) {
@@ -153,7 +162,8 @@ void NavMenuWidget::updateButtonStyles(){
          ui->btnMaster,
          ui->btnSettings,
          ui->btnReceive,
-         ui->btnColdStaking
+         ui->btnColdStaking,
+         ui->btnSubscription
     });
 }
 

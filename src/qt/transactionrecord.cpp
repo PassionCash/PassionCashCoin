@@ -78,8 +78,11 @@ bool TransactionRecord::decomposeCoinStake(const CWallet* wallet, const CWalletT
                     subw.type = TransactionRecord::MNRewardLevel4;
                 } else if(subw.credit == val_devfee) {
                     subw.type = TransactionRecord::DeveloperFee;
-                }                    
-                parts.append(subw);
+                }
+                // Perform a check that coin stake for split border not considered twice
+                if(subw.credit < 20*COIN) {                 
+                    parts.append(subw);
+                }
             }
         }
     } else {
