@@ -319,7 +319,6 @@ RES_ICONS = \
   qt/passion/res/img/bg-welcome.png \
   qt/passion/res/img/topbar_icon/ic-check-staking.svg \
   qt/passion/res/img/nav_icon/ic-nav-master.svg \
-  qt/passion/res/img/img-dashboard-banner.jpg \
   qt/passion/res/img/btn-radio-active.svg \
   qt/passion/res/img/topbar_icon/ic-check-sync-off.svg \
   qt/passion/res/img/nav_icon/ic-nav-privacy-active.svg \
@@ -398,9 +397,6 @@ RES_ICONS = \
   qt/passion/res/img/ic-arrow-left-white.svg \
   qt/passion/res/img/ic-arrow-left.svg \
   qt/passion/res/img/ic-copy-liliac.svg \
-  qt/passion/res/img/topbar_icon/ic-submenu-staking.svg \
-  qt/passion/res/img/topbar_icon/ic-submenu-unlock.svg \
-  qt/passion/res/img/topbar_icon/ic-submenu-lock.svg \
   qt/passion/res/img/ic-arrow-right.svg \
   qt/passion/res/img/ic-copy.svg \
   qt/passion/res/img/ic-copy-big.svg \
@@ -424,7 +420,6 @@ RES_ICONS = \
   qt/passion/res/img/ic-label-liliac.svg \
   qt/passion/res/img/ic-transaction-warning.svg \
   qt/passion/res/img/ic-transaction-mint.svg \
-  qt/passion/res/img/ic-transaction-mint-inactive.svg \
   qt/passion/res/img/topbar_icon/ic-check-cold-staking.svg \
   qt/passion/res/img/topbar_icon/ic-check-cold-staking-off.svg \
   qt/passion/res/img/topbar_icon/ic-check-cold-staking-enabled.svg \
@@ -436,33 +431,24 @@ RES_ICONS = \
   qt/passion/res/img/topbar_icon/ic-check-connect.svg \
   qt/passion/res/img/topbar_icon/ic-check-locked-off.svg \
   qt/passion/res/img/dark/ic-transaction-cs-contract.svg \
-  qt/passion/res/img/dark/ic-transaction-cs-contract-inactive.svg \
   qt/passion/res/img/img-qr.svg \
   qt/passion/res/img/ic-label.svg \
   qt/passion/res/img/ic-transaction-received.svg \
   qt/passion/res/img/dark/ic-transaction-received.svg \
   qt/passion/res/img/dark/ic-transaction-warning.svg \
   qt/passion/res/img/dark/ic-transaction-mint.svg \
-  qt/passion/res/img/dark/ic-transaction-mint-inactive.svg \
-  qt/passion/res/img/ic-transaction-received-inactive.svg \
-  qt/passion/res/img/dark/ic-transaction-received-inactive.svg \
   qt/passion/res/img/img-welcome-step1.png \
   qt/passion/res/img/ic-menu-hover.svg \
   qt/passion/res/img/ic-transaction-sent.svg \
-  qt/passion/res/img/ic-transaction-sent-inactive.svg \
   qt/passion/res/img/dark/ic-transaction-sent.svg \
-  qt/passion/res/img/dark/ic-transaction-sent-inactive.svg \
   qt/passion/res/img/img-welcome-step2.png \
   qt/passion/res/img/ic-check-dark.svg \
   qt/passion/res/img/ic-mint.svg \
   qt/passion/res/img/ic-transaction-staked.svg \
-  qt/passion/res/img/ic-transaction-staked-inactive.svg \
   qt/passion/res/img/dark/ic-transaction-staked.svg \
-  qt/passion/res/img/dark/ic-transaction-staked-inactive.svg \
   qt/passion/res/img/img-welcome-step3.png \
   qt/passion/res/img/ic-check-liliac-on.svg \
   qt/passion/res/img/nav_icon/ic-nav-address-active.svg \
-  qt/passion/res/img/topbar_icon/ic-unlock-staking.svg \
   qt/passion/res/img/img-welcome-step4.png \
   qt/passion/res/img/nav_icon/ic-nav-address-hover.svg \
   qt/passion/res/img/topbar_icon/ic-update-liliac.svg \
@@ -471,15 +457,10 @@ RES_ICONS = \
   qt/passion/res/img/ic-check-liliac-indeterminate.svg \
   qt/passion/res/img/ic-check-box-liliac-indeterminate.svg \
   qt/passion/res/img/ic-transaction-stake-delegated.svg \
-  qt/passion/res/img/ic-transaction-stake-delegated-inactive.svg \
   qt/passion/res/img/ic-transaction-stake-hot.svg \
-  qt/passion/res/img/ic-transaction-stake-hot-inactive.svg \
   qt/passion/res/img/dark/ic-transaction-stake-hot.svg \
-  qt/passion/res/img/dark/ic-transaction-stake-hot-inactive.svg \
   qt/passion/res/img/dark/ic-transaction-stake-delegated.svg \
-  qt/passion/res/img/dark/ic-transaction-stake-delegated-inactive.svg \
   qt/passion/res/img/ic-transaction-cs-contract.svg \
-  qt/passion/res/img/ic-transaction-cs-contract-inactive.svg \
   qt/passion/res/img/ic-check-box-indeterminate.svg \
   qt/passion/res/img/ic-information.svg \
   qt/passion/res/img/ic-information-hover.svg \

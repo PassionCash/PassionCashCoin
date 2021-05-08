@@ -71,24 +71,22 @@ void SubscriptionModel::updateMNList(){
 }
 
 QString SubscriptionModel::getAddressBalance(QString address) {
-    /*
-    std::map<QString, std::vector<COutput>> mapCoins;
+    
+    std::map<WalletModel::ListCoinsKey, std::vector<WalletModel::ListCoinsValue>> mapCoins;
+    CAmount nSum = 0;
     if(wModel) {
-        CAmount nSum = 0;
-        this->wModel->listCoins(mapCoins);    
-        for (PAIRTYPE(QString, std::vector<COutput>) coins : mapCoins) {
-            QString sWalletAddress = coins.first;            
-            if(sWalletAddress == address) {
-                for(const COutput& out: coins.second) {
-                    nSum += out.tx->vout[out.i].nValue;
+        //TODO
+        wModel->listCoins(mapCoins);   
+        for (const std::pair<WalletModel::ListCoinsKey, std::vector<WalletModel::ListCoinsValue>>& coins : mapCoins) {
+            QString sWalletAddress = coins.first.address;            
+            if(!QString::compare(sWalletAddress, address, Qt::CaseSensitive)) {
+                for(const WalletModel::ListCoinsValue& out: coins.second) {                    
+                    nSum  += out.nValue;
                 }
             }
         }
-        return GUIUtil::formatBalance(nSum);
     }
-    */
-    CAmount test = 5*COIN;
-    return GUIUtil::formatBalance(test);
+    return GUIUtil::formatBalance(nSum);
 }
 int SubscriptionModel::rowCount(const QModelIndex &parent) const
 {
@@ -146,7 +144,7 @@ QVariant SubscriptionModel::data(const QModelIndex &index, int role) const
             case NAME:
                 return nodes.uniqueKeys().value(row);
                 //return nodes.values().value(row)->getSiteName();
-            case DOMAIN:
+            case DOMAINS:
                 return nodes.values().value(row)->getSiteDomain();
             case KEY:
                 return nodes.values().value(row)->getSiteKey();

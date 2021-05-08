@@ -52,7 +52,7 @@ void SubRow::updateView(QString domain, QString key, QString paymentaddress,QStr
     ui->lblRegisteredAddressValue->setText(registeraddress);
     ui->lblBalanceRegisteredAddressValue->setText(registerAddressBalance);
     ui->lblSiteFeeTitle->setText("Fee / h");
-    ui->lblSiteFeeValue->setText(sitefee + " BTAD");
+    ui->lblSiteFeeValue->setText(sitefee + " PASSION");
 }
 
 SubRow::~SubRow(){

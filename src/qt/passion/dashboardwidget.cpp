@@ -936,10 +936,10 @@ void DashboardWidget::processNewTransaction(const QModelIndex& parent, int start
 
     if (!txModel || txModel->processingQueuedTransactions())
         return;
-
+    /*
     if(walletModel->getOptionsModel()->getCombineUTXO()) {
         combineUTXOs();
-    }
+    }*/
     QString date = txModel->index(start, TransactionTableModel::Date, parent).data().toString();
     qint64 amount = txModel->index(start, TransactionTableModel::Amount, parent).data(Qt::EditRole).toULongLong();
     QString type = txModel->index(start, TransactionTableModel::Type, parent).data().toString();
@@ -947,19 +947,24 @@ void DashboardWidget::processNewTransaction(const QModelIndex& parent, int start
 
     Q_EMIT incomingTransaction(date, walletModel->getOptionsModel()->getDisplayUnit(), amount, type, address);
 }
-
+/*
 void DashboardWidget::combineUTXOs() {
     CAmount sendValue = 0;
+    CAmount nSplit = 0;
     CCoinControl* coinControl = new CCoinControl();
-    walletModel->combineUTXO(sendValue,coinControl);
-    if(sendValue > 500*COIN || coinControl->QuantitySelected() > 400) {
+    walletModel->getSplitStakeThreshold(nSplit);
+    nSplit = nSplit * COIN;
+    walletModel->combineUTXO(sendValue,coinControl,nSplit);
+    LogPrintf("SSTMIN: %i, Value %i \n",nSplit, sendValue);
+    if(sendValue > nSplit || coinControl->QuantitySelected() > 500) {
         Destination dest;
-        walletModel->getNewAddress(dest);
+        //walletModel->getUXTOMergeAddress(dest);
+        walletModel->getNewAddress(dest,"Merge UTXO Transaction");
         SendCoinsRecipient sendCoinsRecipient(
                     QString::fromStdString(dest.ToString()),
-                    QString::fromStdString(""),
+                    QString::fromStdString("Merge UTXO Transaction"),
                     sendValue - 1500000,
-                    "");
+                    "Merged UTXOs");
         QList<SendCoinsRecipient> recipients;
         recipients.append(sendCoinsRecipient);
         WalletModelTransaction currentTransaction(recipients);
@@ -969,7 +974,7 @@ void DashboardWidget::combineUTXOs() {
             walletModel->sendCoins(currentTransaction);
         }
     }
-}
+}*/
 DashboardWidget::~DashboardWidget()
 {
 #ifdef USE_QTCHARTS

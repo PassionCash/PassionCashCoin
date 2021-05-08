@@ -27,7 +27,7 @@ public:
 
     enum ColumnIndex {
         NAME = 0,
-	    DOMAIN = 1,  
+	    DOMAINS = 1,  
         KEY = 2,
 	    ADDRESS = 3,
         EXPIRE = 4,

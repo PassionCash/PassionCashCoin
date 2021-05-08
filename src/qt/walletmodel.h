@@ -175,7 +175,9 @@ public:
     CAmount getLockedBalance() const;
     bool haveWatchOnly() const;
     CAmount getDelegatedBalance() const;
-    void combineUTXO(CAmount&, CCoinControl*);
+    //Functions for autocombine UTXO to Stake amount
+    //void combineUTXO(CAmount&, CCoinControl*, CAmount&);
+    bool getUXTOMergeAddress(Destination& ret);
 
     bool isColdStaking() const;
 
@@ -210,6 +212,7 @@ public:
     bool hasWalletCustomFee();
     bool getWalletCustomFee(CAmount& nFeeRet);
     void setWalletCustomFee(bool fUseCustomFee, const CAmount& nFee = DEFAULT_TRANSACTION_FEE);
+    void getSplitStakeThreshold(CAmount& nSplitStake);
 
     const CWalletTx* getTx(uint256 id);
 

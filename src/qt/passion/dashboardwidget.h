@@ -121,7 +121,7 @@ private Q_SLOTS:
     void onSortChanged(const QString&);
     void onSortTypeChanged(const QString& value);
     void updateDisplayUnit();
-    void combineUTXOs();
+    //void combineUTXOs();
     void showList();
     void onTxArrived(const QString& hash, const bool& isCoinStake, const bool& isCSAnyType);
 

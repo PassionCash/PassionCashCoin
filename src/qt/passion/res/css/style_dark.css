@@ -732,7 +732,7 @@ QPushButton[cssClass="btn-check-theme"]:checked {
 }
 
 QPushButton[cssClass="btn-check-lock-sub-menu-unlocked"] {
-    background-image: url("://ic-wallet-status-unlock");
+    background-image: url("://ic-submenu-unlock");
     background-position:left center;
     background-repeat:no-repeat;
     background-color: transparent;
@@ -752,7 +752,7 @@ QPushButton[cssClass="btn-check-lock-sub-menu-unlocked"]:hover {
 }
 
 QPushButton[cssClass="btn-check-lock-sub-menu-locked"] {
-    background-image: url("://ic-wallet-status-lock");
+    background-image: url("://ic-submenu-lock");
     background-position:left center;
     background-repeat:no-repeat;
     background-color: transparent;
@@ -762,18 +762,18 @@ QPushButton[cssClass="btn-check-lock-sub-menu-locked"] {
     border-bottom:0px;
     border-radius:0px;
 }
-/*
+
 QPushButton[cssClass="btn-check-lock-sub-menu-locked"]:checked {
     background-color:#50ca2bac;
 }
 
 QPushButton[cssClass="btn-check-lock-sub-menu-locked"]:hover {
     color:#FFFFFF;
-}*/
+}
 
 
 QPushButton[cssClass="btn-check-lock-sub-menu-staking"] {
-    background-image: url("://ic-wallet-status-staking");
+    background-image: url("://ic-submenu-staking");
     background-position:left center;
     background-repeat:no-repeat;
     background-color: transparent;
@@ -783,14 +783,14 @@ QPushButton[cssClass="btn-check-lock-sub-menu-staking"] {
     border-bottom:0px;
     border-radius:0px;
 }
-/*
+
 QPushButton[cssClass="btn-check-lock-sub-menu-staking"]:checked {
     background-color:#50ca2bac;
 }
 
 QPushButton[cssClass="btn-check-lock-sub-menu-staking"]:hover {
     color:#FFFFFF;
-}*/
+}
 
 
 *[cssClass="top-sub-menu"] {

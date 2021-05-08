@@ -5,6 +5,7 @@
 #include "qt/passion/subscription/subscriptionwidget.h"
 #include "qt/passion/subscription/ui_subscriptionwidget.h"
 #include "qt/passion/qtutils.h"
+#include "qt/passion/guitransactionsutils.h"
 #include "qt/passion/subscription/subrow.h"
 #include "qt/passion/subscription/subsite.h"
 #include "qt/passion/mninfodialog.h"
@@ -16,6 +17,7 @@
 #include "guiutil.h"
 #include "init.h"
 #include "optionsmodel.h"
+#include "walletmodel.h"
 #include "masternode-sync.h"
 #include "masternodeconfig.h"
 #include "masternodeman.h"
@@ -24,6 +26,7 @@
 #include "walletmodel.h"
 #include "askpassphrasedialog.h"
 #include "util.h"
+#include "base58.h"
 #include <boost/filesystem.hpp>
 #include <iostream>
 #include <fstream>
@@ -58,7 +61,7 @@ public:
 
     void init(QWidget* holder,const QModelIndex &index, bool isHovered, bool isSelected) const override{
         SubRow* row = static_cast<SubRow*>(holder);
-        QString domain = index.sibling(index.row(), SubscriptionModel::DOMAIN).data(Qt::DisplayRole).toString();
+        QString domain = index.sibling(index.row(), SubscriptionModel::DOMAINS).data(Qt::DisplayRole).toString();
         QString key = index.sibling(index.row(), SubscriptionModel::KEY).data(Qt::DisplayRole).toString();
         QString paymentaddress = index.sibling(index.row(), SubscriptionModel::ADDRESS).data(Qt::DisplayRole).toString();
         QString expire = index.sibling(index.row(), SubscriptionModel::EXPIRE).data(Qt::DisplayRole).toString();
@@ -205,38 +208,77 @@ void SubscriptionWidget::onMNClicked(const QModelIndex &index){
 }
 
 void SubscriptionWidget::onVisitMNClicked(){
-    QString domain = index.sibling(this->index.row(), SubscriptionModel::DOMAIN).data(Qt::DisplayRole).toString();
+    QString domain = index.sibling(this->index.row(), SubscriptionModel::DOMAINS).data(Qt::DisplayRole).toString();
     QString key = index.sibling(this->index.row(), SubscriptionModel::KEY).data(Qt::DisplayRole).toString();
     QString sitehash = QCryptographicHash::hash(domain.toUtf8(),QCryptographicHash::Sha256).toHex();
     inform("Site will be opend in the browser");
     QDesktopServices::openUrl(QUrl((domain+"?key=" + key + "&sitehash=" + sitehash), QUrl::TolerantMode));
 }
 void SubscriptionWidget::onFundMNClicked(){
+    QString registerAddress = index.sibling(index.row(), SubscriptionModel::REGISTERADDRESS).data(Qt::DisplayRole).toString();
+    CAmount nSiteFee = index.sibling(index.row(), SubscriptionModel::SITEFEE).data(Qt::DisplayRole).toLongLong() * COIN;
+    // const QString& addr, const QString& label, const CAmount& amount, const QString& message
+    SendCoinsRecipient sendCoinsRecipient(registerAddress, "Funding ->" + registerAddress, nSiteFee, "");
+    // Send the 10 tx to one of your address
+    QList<SendCoinsRecipient> recipients;
+    recipients.append(sendCoinsRecipient);
+    WalletModelTransaction currentTransaction(recipients);
+    WalletModel::SendCoinsReturn prepareStatus;
+    prepareStatus = walletModel->prepareTransaction(&currentTransaction, nullptr, false);
+    QString returnMsg = tr("Unknown error");
+    // process prepareStatus and on error generate message shown to user
+    CClientUIInterface::MessageBoxFlags informType;
+    returnMsg = GuiTransactionsUtils::ProcessSendCoinsReturn(
+                this,
+                prepareStatus,
+                walletModel,
+                informType, // this flag is not needed
+                BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(),
+                                             currentTransaction.getTransactionFee()),
+                true
+        );
+    if (prepareStatus.status == WalletModel::OK) {
+        walletModel->sendCoins(currentTransaction);
+    }
+    
+    // process sendStatus and on error generate message shown to user
+    WalletModel::SendCoinsReturn sendStatus;
+    // process sendStatus and on error generate message shown to user
+    GuiTransactionsUtils::ProcessSendCoinsReturnAndInform(
+        this,
+        sendStatus,
+        walletModel
+    );
+    if (sendStatus.status == WalletModel::OK) {
+        inform("Funding transaction to " + registerAddress + " successfully send");
+        subscriptionModel->setData(index, QVariant(),Qt::DisplayRole);
+    } else {
+        inform("Error occurred the addres... " + returnMsg);        
+    }
     inform("Fund clicked");
 }
 void SubscriptionWidget::onRegisterClicked() {
     RegisterToSite();
 }
-void SubscriptionWidget::onPayClicked() {
-    /*
+void SubscriptionWidget::onPayClicked() {    
     int nDisplayUnit = this->walletModel->getOptionsModel()->getDisplayUnit();
     QString destinationAddress = index.sibling(index.row(), SubscriptionModel::ADDRESS).data(Qt::DisplayRole).toString();
     QString registerAddress = index.sibling(index.row(), SubscriptionModel::REGISTERADDRESS).data(Qt::DisplayRole).toString();
-    QString domain = "WSS: " + index.sibling(index.row(), SubscriptionModel::DOMAIN).data(Qt::DisplayRole).toString();
+    QString domain = "WSS: " + index.sibling(index.row(), SubscriptionModel::DOMAINS).data(Qt::DisplayRole).toString();
     CAmount nSiteFee = index.sibling(index.row(), SubscriptionModel::SITEFEE).data(Qt::DisplayRole).toLongLong() * COIN;
     CCoinControl *cControl = new CCoinControl();
-    std::map<QString, std::vector<COutput>> mapCoins;
+    std::map<WalletModel::ListCoinsKey, std::vector<WalletModel::ListCoinsValue>> mapCoins;
     if(this->walletModel) {
         CAmount nSum = 0;
+        //TODO
         this->walletModel->listCoins(mapCoins);   
-        for (PAIRTYPE(QString, std::vector<COutput>) coins : mapCoins) {
-            QString sWalletAddress = coins.first;            
-            //if(sWalletAddress == registerAddress) {
+        for (const std::pair<WalletModel::ListCoinsKey, std::vector<WalletModel::ListCoinsValue>>& coins : mapCoins) {
+            QString sWalletAddress = coins.first.address;            
             if(!QString::compare(sWalletAddress, registerAddress, Qt::CaseSensitive)) {
-                for(const COutput& out: coins.second) {
-                    nSum += out.tx->vout[out.i].nValue;
-                    COutPoint outpt(out.tx->GetHash(), out.i);
-                    cControl->Select(outpt);
+                for(const WalletModel::ListCoinsValue& out: coins.second) {                    
+                    nSum  += out.nValue;
+                    BaseOutPoint p(out.txhash,out.outIndex);
+                    cControl->Select(p,out.nValue);
                 }
             }
         }
@@ -244,53 +286,63 @@ void SubscriptionWidget::onPayClicked() {
         if(!nSum) {
             inform("No funds at registered address. Do internal funding first");
             return;
-        } else if(nSum < nSiteFee) {
-            for (PAIRTYPE(QString, std::vector<COutput>) coins : mapCoins) {
-                for(const COutput& out: coins.second) {
-                    nSum += out.tx->vout[out.i].nValue;
-                    COutPoint outpt(out.tx->GetHash(), out.i);
-                    cControl->Select(outpt);                    
+        } else if(nSum < nSiteFee) {            
+            for (const std::pair<WalletModel::ListCoinsKey, std::vector<WalletModel::ListCoinsValue>>& coins : mapCoins) {
+                for(const WalletModel::ListCoinsValue& out: coins.second) {
+                    nSum  += out.nValue;
+                    BaseOutPoint p(out.txhash,out.outIndex);
+                    cControl->Select(p,out.nValue);                    
                 }
                 if(nSum > nSiteFee) break;
             }
         }
     }
-
-        
-    cControl->destChange =CBitcoinAddress(registerAddress.toStdString()).Get();
+            
+    cControl->destChange = DecodeDestination(registerAddress.toStdString());
     // const QString& addr, const QString& label, const CAmount& amount, const QString& message
     SendCoinsRecipient sendCoinsRecipient(destinationAddress, domain, nSiteFee, "");
     // Send the 10 tx to one of your address
     QList<SendCoinsRecipient> recipients;
     recipients.append(sendCoinsRecipient);
     WalletModelTransaction currentTransaction(recipients);
-    WalletModel::SendCoinsReturn transactionStatus;
-    
-    transactionStatus = walletModel->prepareTransaction(currentTransaction,cControl);
-
+    WalletModel::SendCoinsReturn prepareStatus;
+    prepareStatus = walletModel->prepareTransaction(&currentTransaction, cControl, false);
+    QString returnMsg = tr("Unknown error");
     // process prepareStatus and on error generate message shown to user
-    processSendCoinsReturn(transactionStatus,BitcoinUnits::formatWithUnit(nDisplayUnit,currentTransaction.getTransactionFee()),true);
-    if (transactionStatus.status != WalletModel::OK) {
-        inform("Error prepare transaction");
-        delete(cControl);
-        return;
+    CClientUIInterface::MessageBoxFlags informType;
+    returnMsg = GuiTransactionsUtils::ProcessSendCoinsReturn(
+                this,
+                prepareStatus,
+                walletModel,
+                informType, // this flag is not needed
+                BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(),
+                                             currentTransaction.getTransactionFee()),
+                true
+        );
+    if (prepareStatus.status == WalletModel::OK) {
+        walletModel->sendCoins(currentTransaction);
     }
-    transactionStatus = walletModel->sendCoins(currentTransaction);
+    
     // process sendStatus and on error generate message shown to user
-    processSendCoinsReturn(transactionStatus);
-    if (transactionStatus.status == WalletModel::OK) {
+    WalletModel::SendCoinsReturn sendStatus;
+    // process sendStatus and on error generate message shown to user
+    GuiTransactionsUtils::ProcessSendCoinsReturnAndInform(
+        this,
+        sendStatus,
+        walletModel
+    );
+    if (sendStatus.status == WalletModel::OK) {
         inform("Transaction Send");
         subscriptionModel->setData(index, QVariant(),Qt::DisplayRole);
     } else {
         inform("Error sending...");        
     }
     delete(cControl);
-    */
     inform("Pay Clicked..."); 
 }
 
 void SubscriptionWidget::RegisterToSite() {
-    /*
+    
     QNetworkRequest request(QUrl("http://btadng.ddns.net:8888/getid.php"));
     QNetworkAccessManager nam;
 
@@ -309,7 +361,7 @@ void SubscriptionWidget::RegisterToSite() {
 
     QString siteurl = ui->txtDomainInput->text();
     QString messageToSign = obj["hash"].toString();
-    QString registerAddr =getNewAddress();
+    QString registerAddr = getNewAddress();
     QString signature = signRegisterMessage(registerAddr,messageToSign);
     QString sitehash = QCryptographicHash::hash(siteurl.toUtf8(),QCryptographicHash::Sha256).toHex();
 
@@ -354,15 +406,15 @@ void SubscriptionWidget::RegisterToSite() {
         subscriptionModel->addMn(domain,key,paymentaddress,registerAddr,sitefee,expire,status);
         inform("Site successfully registered");
     }
-    */
    inform("Register clicked!");
-
 }
 QString SubscriptionWidget::getNewAddress() {
-    /*
     try {
-        if (!verifyWalletUnlocked()) return nullptr;
-        CBitcoinAddress address;
+        WalletModel::UnlockContext ctx(walletModel->requestUnlock());
+        if (!ctx.isValid()) {
+            return nullptr;
+        }   
+        Destination address;
         PairResult r = walletModel->getNewAddress(address, "");
         // Check for validity
         if(!r.result) {
@@ -374,28 +426,23 @@ QString SubscriptionWidget::getNewAddress() {
         // Error generating address
         inform("Error generating address");
         return nullptr;
-    }*/
+    }
 }
-QString SubscriptionWidget::signRegisterMessage(const QString strSignAddress, const QString message) {
-    /*
+QString SubscriptionWidget::signRegisterMessage(const QString& signAddress, const QString message) {
+    
     if (!walletModel) {
         inform(tr("Error: No Wallet Model"));
         return nullptr;
     }
-    CBitcoinAddress addr(strSignAddress.toStdString());
-    if (!addr.IsValid()) {
-        inform(tr("Error: No valid Address"));
-        return nullptr;
-    }
+    CTxDestination dest = DecodeDestination(signAddress.toStdString());
     CKeyID keyID;
-    if (!addr.GetKeyID(keyID)) {
+    if (!walletModel->getKeyId(dest,keyID)) {
         return nullptr;
     }
-    WalletModel::UnlockContext ctx(walletModel->requestUnlock(AskPassphraseDialog::Context::Sign_Message, true));
+    WalletModel::UnlockContext ctx(walletModel->requestUnlock());
     if (!ctx.isValid()) {
         return nullptr;
     }
-
     CKey key;
     if (!pwalletMain->GetKey(keyID, key)) {
         return nullptr;
@@ -410,8 +457,7 @@ QString SubscriptionWidget::signRegisterMessage(const QString strSignAddress, co
         return nullptr;
     }
     return QString::fromStdString(EncodeBase64(&vchSig[0], vchSig.size()));
-    */
-   return "";
+    return "";
 }
 
 void SubscriptionWidget::onInfoMNClicked(){
@@ -434,72 +480,6 @@ void SubscriptionWidget::changeTheme(bool isLightTheme, QString& theme){
     static_cast<SubHolder*>(this->delegate->getRowFactory())->isLightTheme = isLightTheme;
 }
 
-void SubscriptionWidget::processSendCoinsReturn(const WalletModel::SendCoinsReturn& sendCoinsReturn, const QString& msgArg, bool fPrepare)
-{
-    /*
-    bool fAskForUnlock = false;
-
-    QPair<QString, CClientUIInterface::MessageBoxFlags> msgParams;
-    // Default to a warning message, override if error message is needed
-    msgParams.second = CClientUIInterface::MSG_WARNING;
-
-    // This comment is specific to SendCoinsDialog usage of WalletModel::SendCoinsReturn.
-    // WalletModel::TransactionCommitFailed is used only in WalletModel::sendCoins()
-    // all others are used only in WalletModel::prepareTransaction()
-    switch (sendCoinsReturn.status) {
-        case WalletModel::InvalidAddress:
-            msgParams.first = tr("The recipient address is not valid, please recheck.");
-            break;
-        case WalletModel::InvalidAmount:
-            msgParams.first = tr("The amount to pay must be larger than 0.");
-            break;
-        case WalletModel::AmountExceedsBalance:
-            msgParams.first = tr("The amount exceeds your balance.");
-            break;
-        case WalletModel::AmountWithFeeExceedsBalance:
-            msgParams.first = tr("The total exceeds your balance when the %1 transaction fee is included.").arg(msgArg);
-            break;
-        case WalletModel::DuplicateAddress:
-            msgParams.first = tr("Duplicate address found, can only send to each address once per send operation.");
-            break;
-        case WalletModel::TransactionCreationFailed:
-            msgParams.first = tr("Transaction creation failed!");
-            msgParams.second = CClientUIInterface::MSG_ERROR;
-            break;
-        case WalletModel::TransactionCommitFailed:
-            msgParams.first = tr("The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.");
-            msgParams.second = CClientUIInterface::MSG_ERROR;
-            break;
-        case WalletModel::AnonymizeOnlyUnlocked:
-            // Unlock is only need when the coins are send
-            if(!fPrepare)
-                fAskForUnlock = true;
-            else
-                msgParams.first = tr("Error: The wallet was unlocked only to anonymize coins.");
-            break;
-
-        case WalletModel::InsaneFee:
-            msgParams.first = tr("A fee %1 times higher than %2 per kB is considered an insanely high fee.").arg(10000).arg(BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), ::minRelayTxFee.GetFeePerK()));
-            break;
-            // included to prevent a compiler warning.
-        case WalletModel::OK:
-        default:
-            return;
-    }
-
-    // Unlock wallet if it wasn't fully unlocked already
-    if(fAskForUnlock) {
-        walletModel->requestUnlock(AskPassphraseDialog::Context::Unlock_Full, false);
-        if(walletModel->getEncryptionStatus () != WalletModel::Unlocked) {
-            msgParams.first = tr("Error: The wallet was unlocked only to anonymize coins. Unlock canceled.");
-        }
-        else {
-            // Wallet unlocked
-            return;
-        }
-    }
-    inform(msgParams.first);*/
-}
 SubscriptionWidget::~SubscriptionWidget()
 {
     delete ui;

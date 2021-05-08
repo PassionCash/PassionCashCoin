@@ -165,11 +165,7 @@ void OptionsModel::setWindowDefaultOptions(QSettings& settings, bool reset)
     if (!settings.contains("fMinimizeToTray") || reset)
         settings.setValue("fMinimizeToTray", false);
     fMinimizeToTray = settings.value("fMinimizeToTray").toBool();
-
-    if (!settings.contains("fCombineUTXO") || reset)
-        settings.setValue("fCombineUTXO", false);
-    fCombineUTXO = settings.value("fCombineUTXO").toBool();
-
+    
     if (!settings.contains("fMinimizeOnClose") || reset)
         settings.setValue("fMinimizeOnClose", false);
     fMinimizeOnClose = settings.value("fMinimizeOnClose").toBool();
@@ -237,8 +233,6 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
             return GUIUtil::GetStartOnSystemStartup();
         case MinimizeToTray:
             return fMinimizeToTray;
-        case CombineUTXO:
-            return fCombineUTXO;
         case MapPortUPnP:
 #ifdef USE_UPNP
             return settings.value("fUseUPnP");
@@ -324,10 +318,6 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
         case MinimizeToTray:
             fMinimizeToTray = value.toBool();
             settings.setValue("fMinimizeToTray", fMinimizeToTray);
-            break;
-        case CombineUTXO:
-            fCombineUTXO = value.toBool();
-            settings.setValue("fCombineUTXO", fCombineUTXO);
             break;
         case MapPortUPnP: // core option - can be changed on-the-fly
             settings.setValue("fUseUPnP", value.toBool());

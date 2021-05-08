@@ -139,7 +139,8 @@ CAmount WalletModel::getBalance(const CCoinControl* coinControl, bool fIncludeDe
 
     return wallet->GetAvailableBalance(fIncludeDelegated, fIncludeShielded) - (fUnlockedOnly ? wallet->GetLockedCoins() : CAmount(0));
 }
-void WalletModel::combineUTXO(CAmount& value, CCoinControl* coinControl) {
+/*
+void WalletModel::combineUTXO(CAmount& value, CCoinControl* coinControl, CAmount& nSplit) {
     CWallet::AvailableCoinsFilter coinsFilter;
     coinsFilter.fIncludeDelegated = true;
     std::vector<COutput> vCoins;
@@ -148,16 +149,16 @@ void WalletModel::combineUTXO(CAmount& value, CCoinControl* coinControl) {
     for (const COutput& out : vCoins) {
         bool fSkip = isLockedCoin(out.tx->GetHash(), out.i);
         if (out.fSpendable && !fSkip)
-            if(out.tx->tx->vout[out.i].nValue < (20*COIN)) {
+            if(out.tx->tx->vout[out.i].nValue < nSplit) {
                 count++;
-                if(count > 400) 
+                if(count > 500) 
                     break;
                 value += out.tx->tx->vout[out.i].nValue;      
                 BaseOutPoint p(out.tx->GetHash(),out.i);
                 coinControl->Select(p,out.tx->tx->vout[out.i].nValue);
         }
     }
-}
+} */
 
 CAmount WalletModel::getUnlockedBalance(const CCoinControl* coinControl, bool fIncludeDelegated, bool fIncludeShielded) const
 {
@@ -335,6 +336,11 @@ bool WalletModel::getWalletCustomFee(CAmount& nFeeRet)
 {
     nFeeRet = static_cast<CAmount>(optionsModel->data(optionsModel->index(OptionsModel::nCustomFee), Qt::EditRole).toLongLong());
     return hasWalletCustomFee();
+}
+
+void WalletModel::getSplitStakeThreshold(CAmount& nSplitStake)
+{
+    nSplitStake = static_cast<CAmount>(optionsModel->data(optionsModel->index(OptionsModel::StakeSplitThreshold), Qt::EditRole).toLongLong());
 }
 
 void WalletModel::setWalletCustomFee(bool fUseCustomFee, const CAmount& nFee)
@@ -929,6 +935,18 @@ PairResult WalletModel::getNewAddress(Destination& ret, std::string label) const
     PairResult res = wallet->getNewAddress(dest, label);
     if (res.result) ret = Destination(dest, false);
     return res;
+}
+bool WalletModel::getUXTOMergeAddress(Destination& ret) {
+    LOCK(wallet->cs_wallet);
+    std::string label = "UTXO Merge";
+    for (auto it = wallet->NewAddressBookIterator(); it.IsValid(); it.Next()) {
+        auto addrBook = it.GetValue();
+        if (!addrBook.isShielded() && addrBook.name == label) {
+            std::__cxx11::string address = EncodeDestination(*it.GetCTxDestKey());
+            //ret.pushKV(EncodeDestination(*it.GetCTxDestKey(), AddressBook::IsColdStakingPurpose(addrBook.purpose)), AddressBookDataToJSON(addrBook, false));
+        }
+    }
+    return true;
 }
 
 PairResult WalletModel::getNewStakingAddress(Destination& ret,std::string label) const

@@ -9,6 +9,7 @@
 #include "qt/passion/pwidget.h"
 #include "qt/passion/subscription/subsite.h"
 #include "coincontrol.h"
+#include "qt/passion/guitransactionsutils.h"
 #include "qt/passion/furabstractlistitemdelegate.h"
 #include "qt/passion/subscription/subscriptionmodel.h"
 #include "qt/passion/subscription/subscriptiontipmenu.h"
@@ -52,7 +53,7 @@ private Q_SLOTS:
     void updateListState();
     void RegisterToSite();
     QString getNewAddress();
-    QString signRegisterMessage(const QString strSignAddress, const QString message);
+    QString signRegisterMessage(const QString& strSignAddress, const QString message);
 
 private:
     Ui::SubscriptionWidget *ui;
@@ -62,7 +63,6 @@ private:
     QModelIndex index;
     QTimer *timer = nullptr;
     CCoinControl *coinControl = nullptr;
-    void processSendCoinsReturn(const WalletModel::SendCoinsReturn& sendCoinsReturn, const QString& msgArg = QString(), bool fPrepare = false);
     void startAlias(QString strAlias);
 };
 

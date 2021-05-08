@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2023 The BTAD developers
+// Copyright (c) 2021 The PASSION Developers
 #ifndef SUBSITE_H
 #define SUBSITE_H
 
