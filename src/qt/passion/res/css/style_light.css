@@ -61,7 +61,7 @@ HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH*/
 }
 
 QPushButton[cssClass="img-nav-logo"] {
-    qproperty-icon: url("://img-nav-logo");
+    qproperty-icon: url("://img-nav-logo-light");
     qproperty-iconSize: 49px 60px;
 }
 
@@ -287,6 +287,50 @@ QPushButton[cssClass="img-nav-logo"] {
     background-color: #1d0618;
     font-size:14px;
     color: #ca2bac;
+}
+/*HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+!############# Subscription Row Icons
+ ################################*/
+
+ *[cssClass="btn-subscribe-visit"] {
+    qproperty-icon: url("://btn-subscribe-visit") off,
+    url("://btn-subscribe-visit") on;
+    qproperty-iconSize: 40px 40px;
+    background-color:transparent;
+    font-size:14px;
+    color: #814a69;
+}
+*[cssClass="btn-subscribe-copy"] {
+    qproperty-icon: url("://btn-subscribe-copy") off,
+    url("://btn-subscribe-copy") on;
+    qproperty-iconSize: 40px 40px;
+    background-color:transparent;
+    font-size:14px;
+    color: #814a69;
+}
+*[cssClass="btn-subscribe-info"] {
+    qproperty-icon: url("://btn-subscribe-info") off,
+    url("://btn-subscribe-info") on;
+    qproperty-iconSize: 40px 40px;
+    background-color:transparent;
+    font-size:14px;
+    color: #814a69;
+}
+*[cssClass="btn-subscribe-fund"] {
+    qproperty-icon: url("://btn-subscribe-fund") off,
+    url("://btn-subscribe-fund") on;
+    qproperty-iconSize: 40px 40px;
+    background-color:transparent;
+    font-size:14px;
+    color: #814a69;
+}
+*[cssClass="btn-subscribe-pay"] {
+    qproperty-icon: url("://btn-subscribe-pay") off,
+    url("://btn-subscribe-pay") on;
+    qproperty-iconSize: 40px 40px;
+    background-color:transparent;
+    font-size:14px;
+    color: #814a69;
 }
 
 *[cssClass="btn-nav-address"] {
@@ -1522,8 +1566,8 @@ QPushButton[cssClass="btn-secundary-clear"]:pressed {
 }
 
 QPushButton[cssClass="btn-secundary-new-address"] {
-    qproperty-icon: url("://ic-update") off,
-                    url("://ic-update") on ;
+    qproperty-icon: url("://ic-update-liliac") off,
+                    url("://ic-update-liliac") on ;
     qproperty-iconSize: 30px 30px;
     border:  1px solid #3365214a;
     background-color:#FFFFFF;
@@ -2953,7 +2997,7 @@ HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH*/
 *[cssClass="container-list-menu"]{
     background-color:white;
     border-radius:2px;
-    padding:15px;
+    padding:1px;
     border: 1px solid #bababa;
 }
 

@@ -139,7 +139,7 @@ CAmount WalletModel::getBalance(const CCoinControl* coinControl, bool fIncludeDe
 
     return wallet->GetAvailableBalance(fIncludeDelegated, fIncludeShielded) - (fUnlockedOnly ? wallet->GetLockedCoins() : CAmount(0));
 }
-/*
+
 void WalletModel::combineUTXO(CAmount& value, CCoinControl* coinControl, CAmount& nSplit) {
     CWallet::AvailableCoinsFilter coinsFilter;
     coinsFilter.fIncludeDelegated = true;
@@ -158,7 +158,7 @@ void WalletModel::combineUTXO(CAmount& value, CCoinControl* coinControl, CAmount
                 coinControl->Select(p,out.tx->tx->vout[out.i].nValue);
         }
     }
-} */
+}
 
 CAmount WalletModel::getUnlockedBalance(const CCoinControl* coinControl, bool fIncludeDelegated, bool fIncludeShielded) const
 {
@@ -515,7 +515,7 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
                                                   true,
                                                   0,
                                                   fIncludeDelegations,
-                                                  &transaction->fIsStakeDelegationVoided);
+                                                  &transaction->fIsStakeDelegationVoided);                                   
         transaction->setTransactionFee(nFeeRequired);
 
         if (!fCreated) {
@@ -942,7 +942,7 @@ bool WalletModel::getUXTOMergeAddress(Destination& ret) {
     for (auto it = wallet->NewAddressBookIterator(); it.IsValid(); it.Next()) {
         auto addrBook = it.GetValue();
         if (!addrBook.isShielded() && addrBook.name == label) {
-            std::__cxx11::string address = EncodeDestination(*it.GetCTxDestKey());
+            std::string address = EncodeDestination(*it.GetCTxDestKey()).c_str();
             //ret.pushKV(EncodeDestination(*it.GetCTxDestKey(), AddressBook::IsColdStakingPurpose(addrBook.purpose)), AddressBookDataToJSON(addrBook, false));
         }
     }

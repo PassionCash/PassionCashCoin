@@ -52,6 +52,7 @@ private Q_SLOTS:
     void onInfoMNClicked();
     void updateListState();
     void RegisterToSite();
+    void sendCoinsto(CAmount amount = 0, QString address = nullptr,  QString addressfrom = nullptr, int type = 0);
     QString getNewAddress();
     QString signRegisterMessage(const QString& strSignAddress, const QString message);
 

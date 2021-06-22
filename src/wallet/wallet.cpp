@@ -2755,14 +2755,14 @@ bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int
         nValueRet += coinLowestLarger.first;
     } else {
         std::string s = "CWallet::SelectCoinsMinConf best subset: ";
-        /*
+        
         for (unsigned int i = 0; i < vValue.size(); i++) {
             if (vfBest[i]) {
                 setCoinsRet.insert(vValue[i].second);
                 nValueRet += vValue[i].first;
                 s += FormatMoney(vValue[i].first) + " ";
             }
-        }*/
+        }
         LogPrintf("%s - total %s\n", s, FormatMoney(nBest));
     }
 
@@ -2933,7 +2933,6 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend,
         {
             std::vector<COutput> vAvailableCoins;
             AvailableCoins(&vAvailableCoins, coinControl, coinFilter);
-
             nFeeRet = 0;
             if (nFeePay > 0) nFeeRet = nFeePay;
             while (true) {

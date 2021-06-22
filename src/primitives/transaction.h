@@ -150,6 +150,7 @@ class CTxOut
 public:
     CAmount nValue;
     CScript scriptPubKey;
+    bool fWSSFundingTransaction;
     int nRounds;
 
     CTxOut()
@@ -157,7 +158,7 @@ public:
         SetNull();
     }
 
-    CTxOut(const CAmount& nValueIn, CScript scriptPubKeyIn);
+    CTxOut(const CAmount& nValueIn, CScript scriptPubKeyIn, bool fWSSfunding = false);
 
     ADD_SERIALIZE_METHODS;
 
@@ -165,12 +166,14 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITE(nValue);
         READWRITE(scriptPubKey);
+        //READWRITE(fWSSFundingTransaction);
     }
 
     void SetNull()
     {
         nValue = -1;
         scriptPubKey.clear();
+        fWSSFundingTransaction = false;
         nRounds = -10; // an initial value, should be no way to get this by calculations
     }
 
@@ -183,6 +186,7 @@ public:
     {
         nValue = 0;
         scriptPubKey.clear();
+        fWSSFundingTransaction = false;
     }
 
     bool IsEmpty() const
@@ -201,7 +205,6 @@ public:
                 a.scriptPubKey == b.scriptPubKey &&
                 a.nRounds      == b.nRounds);
     }
-
     friend bool operator!=(const CTxOut& a, const CTxOut& b)
     {
         return !(a == b);

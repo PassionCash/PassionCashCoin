@@ -50,6 +50,7 @@ SettingsWidget::SettingsWidget(PassionGUI* parent) :
     setCssProperty(ui->pushButtonOptions, "btn-settings-check");
     setCssProperty(ui->pushButtonOptions1, "btn-settings-options");
     setCssProperty(ui->pushButtonOptions2, "btn-settings-options");
+    setCssProperty(ui->pushButtonOptions3, "btn-settings-options");
     setCssProperty(ui->pushButtonOptions5, "btn-settings-options");
 
     setCssProperty(ui->pushButtonTools, "btn-settings-check");
@@ -67,6 +68,7 @@ SettingsWidget::SettingsWidget(PassionGUI* parent) :
         ui->pushButtonExportCsv,
         ui->pushButtonOptions1,
         ui->pushButtonOptions2,
+        ui->pushButtonOptions3,
         ui->pushButtonOptions5,
         ui->pushButtonConfiguration3,
         ui->pushButtonConfiguration4,
@@ -91,6 +93,7 @@ SettingsWidget::SettingsWidget(PassionGUI* parent) :
     settingsSingMessageWidgets = new SettingsSignMessageWidgets(window, this);
     settingsWalletRepairWidget = new SettingsWalletRepairWidget(window, this);
     settingsWalletOptionsWidget = new SettingsWalletOptionsWidget(window, this);
+    settingsSubscribeOptionsWidget = new SettingsSubscribeOptionsWidget(window, this);
     settingsMainOptionsWidget = new SettingsMainOptionsWidget(window, this);
     settingsDisplayOptionsWidget = new SettingsDisplayOptionsWidget(window, this);
     //settingsMultisendWidget = new SettingsMultisendWidget(this); // no visible for now
@@ -103,6 +106,7 @@ SettingsWidget::SettingsWidget(PassionGUI* parent) :
     ui->stackedWidgetContainer->addWidget(settingsSingMessageWidgets);
     ui->stackedWidgetContainer->addWidget(settingsWalletRepairWidget);
     ui->stackedWidgetContainer->addWidget(settingsWalletOptionsWidget);
+    ui->stackedWidgetContainer->addWidget(settingsSubscribeOptionsWidget);
     ui->stackedWidgetContainer->addWidget(settingsMainOptionsWidget);
     ui->stackedWidgetContainer->addWidget(settingsDisplayOptionsWidget);
     //ui->stackedWidgetContainer->addWidget(settingsMultisendWidget);
@@ -120,6 +124,7 @@ SettingsWidget::SettingsWidget(PassionGUI* parent) :
     connect(ui->pushButtonOptions, &QPushButton::clicked, this, &SettingsWidget::onOptionsClicked);
     connect(ui->pushButtonOptions1, &QPushButton::clicked, this, &SettingsWidget::onMainOptionsClicked);
     connect(ui->pushButtonOptions2, &QPushButton::clicked, this, &SettingsWidget::onWalletOptionsClicked);
+    connect(ui->pushButtonOptions3, &QPushButton::clicked, this, &SettingsWidget::onSubscribeOptionsClicked);
     connect(ui->pushButtonOptions5, &QPushButton::clicked, this, &SettingsWidget::onDisplayOptionsClicked);
 
     // Configuration
@@ -154,6 +159,7 @@ SettingsWidget::SettingsWidget(PassionGUI* parent) :
     connect(settingsMainOptionsWidget, &SettingsMainOptionsWidget::message, this, &SettingsWidget::message);
     connect(settingsDisplayOptionsWidget, &SettingsDisplayOptionsWidget::message, this, &SettingsWidget::message);
     connect(settingsWalletOptionsWidget, &SettingsWalletOptionsWidget::message, this, &SettingsWidget::message);
+    connect(settingsSubscribeOptionsWidget, &SettingsSubscribeOptionsWidget::message, this, &SettingsWidget::message);
     connect(settingsInformationWidget, &SettingsInformationWidget::message,this, &SettingsWidget::message);
 
     connect(settingsDisplayOptionsWidget, &SettingsDisplayOptionsWidget::saveSettings, this, &SettingsWidget::onSaveOptionsClicked);
@@ -164,6 +170,9 @@ SettingsWidget::SettingsWidget(PassionGUI* parent) :
 
     connect(settingsWalletOptionsWidget, &SettingsWalletOptionsWidget::saveSettings, this, &SettingsWidget::onSaveOptionsClicked);
     connect(settingsWalletOptionsWidget, &SettingsWalletOptionsWidget::discardSettings, this, &SettingsWidget::onDiscardChanges);
+
+    connect(settingsSubscribeOptionsWidget, &SettingsSubscribeOptionsWidget::saveSettings, this, &SettingsWidget::onSaveOptionsClicked);
+    connect(settingsSubscribeOptionsWidget, &SettingsSubscribeOptionsWidget::discardSettings, this, &SettingsWidget::onDiscardChanges);
 
     connect(settingsConsoleWidget, &SettingsConsoleWidget::message,this, &SettingsWidget::message);
 
@@ -197,7 +206,7 @@ void SettingsWidget::loadClientModel()
             settingsDisplayOptionsWidget->setClientModel(clientModel);
             settingsMainOptionsWidget->setClientModel(clientModel);
             settingsWalletOptionsWidget->setClientModel(clientModel);
-
+            settingsSubscribeOptionsWidget->setClientModel(clientModel);
             mapper->setModel(optionsModel);
             setMapper();
             mapper->toFirst();
@@ -340,6 +349,11 @@ void SettingsWidget::onWalletOptionsClicked()
     ui->stackedWidgetContainer->setCurrentWidget(settingsWalletOptionsWidget);
     selectOption(ui->pushButtonOptions2);
 }
+void SettingsWidget::onSubscribeOptionsClicked()
+{
+    ui->stackedWidgetContainer->setCurrentWidget(settingsSubscribeOptionsWidget);
+    selectOption(ui->pushButtonOptions3);
+}
 
 void SettingsWidget::onDisplayOptionsClicked()
 {
@@ -428,6 +442,7 @@ void SettingsWidget::setMapper()
 {
     settingsMainOptionsWidget->setMapper(mapper);
     settingsWalletOptionsWidget->setMapper(mapper);
+    settingsSubscribeOptionsWidget->setMapper(mapper);
     settingsDisplayOptionsWidget->setMapper(mapper);
 }
 

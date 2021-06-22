@@ -62,6 +62,7 @@ QT_FORMS_UI = \
   qt/passion/settings/forms/settingsfaqwidget.ui \
   qt/passion/settings/forms/settingsinformationwidget.ui \
   qt/passion/settings/forms/settingsmainoptionswidget.ui \
+  qt/passion/settings/forms/settingssubscribeoptionswidget.ui \
   qt/passion/settings/forms/settingsmultisenddialog.ui \
   qt/passion/settings/forms/settingsmultisendwidget.ui \
   qt/passion/settings/forms/settingssignmessagewidgets.ui \
@@ -159,6 +160,7 @@ QT_MOC_CPP = \
   qt/passion/settings/moc_settingsmultisenddialog.cpp \
   qt/passion/settings/moc_settingsmultisendwidget.cpp \
   qt/passion/settings/moc_settingssignmessagewidgets.cpp \
+  qt/passion/settings/moc_settingssubscribeoptionswidget.cpp \
   qt/passion/settings/moc_settingswalletoptionswidget.cpp \
   qt/passion/settings/moc_settingswalletrepairwidget.cpp \
   qt/passion/settings/moc_settingswidget.cpp \
@@ -287,11 +289,17 @@ BITCOIN_QT_H = \
   qt/passion/settings/settingssignmessagewidgets.h \
   qt/passion/settings/settingswalletoptionswidget.h \
   qt/passion/settings/settingswalletrepairwidget.h \
+  qt/passion/settings/settingssubscribeoptionswidget.h \
   qt/passion/settings/settingswidget.h \
   qt/passion/welcomecontentwidget.h \
   qt/passion/splash.h
 
 RES_ICONS = \
+  qt/passion/res/img/subscribe_fund.png \
+  qt/passion/res/img/subscribe_copy.png \
+  qt/passion/res/img/subscribe_pay.png \
+  qt/passion/res/img/subscribe_visit.png \
+  qt/passion/res/img/subscribe_info.png \
   qt/passion/res/img/passion.ico \
   qt/passion/res/img/passion.png \
   qt/passion/res/img/lock_closed.png \
@@ -404,7 +412,8 @@ RES_ICONS = \
   qt/passion/res/img/ic-arrow-white-left.svg \
   qt/passion/res/img/ic-exit.svg \
   qt/passion/res/img/ic-switch-liliac-on.svg \
-  qt/passion/res/img/img-nav-logo.svg \
+  qt/passion/res/img/img-nav-logo-dark.png \
+  qt/passion/res/img/img-nav-logo-light.png \
   qt/passion/res/img/ic-arrow-white-right.svg \
   qt/passion/res/img/ic-expand.svg \
   qt/passion/res/img/ic-switch-off.svg \
@@ -569,6 +578,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/passion/settings/settingssignmessagewidgets.cpp \
   qt/passion/settings/settingswalletoptionswidget.cpp \
   qt/passion/settings/settingswalletrepairwidget.cpp \
+  qt/passion/settings/settingssubscribeoptionswidget.cpp \
   qt/passion/settings/settingswidget.cpp \
   qt/passion/welcomecontentwidget.cpp \
   qt/passion/splash.cpp

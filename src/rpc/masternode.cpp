@@ -211,33 +211,14 @@ UniValue getmasternodecount (const JSONRPCRequest& request)
     UniValue enabled{UniValue::VARR};
     UniValue inqueue{UniValue::VARR};
     for(int l = CMasternode::LevelValue::MIN; l <= CMasternode::LevelValue::MAX; ++l) {
-
         UniValue total_item{UniValue::VOBJ};
         total_item.pushKV("level", l);
         total_item.pushKV("count", mnodeman.size(l));
         total.push_back(total_item);
 
-        UniValue stable_item{UniValue::VOBJ};
-
-        stable_item.pushKV("level", l);
-        stable_item.pushKV("count", mnodeman.stable_size(l));
-        stable.push_back(stable_item);
-
-        UniValue enabled_item{UniValue::VOBJ};
-
-        enabled_item.pushKV("level", l);
-        enabled_item.pushKV("count", mnodeman.CountEnabled(l));
-        enabled.push_back(enabled_item);
-
-        UniValue inqueue_item{UniValue::VOBJ};
-
         int inqueue_count = 0u;
-        mnodeman.GetNextMasternodeInQueueForPayment(pChainTip->nHeight,l, true, nCount, pChainTip);
-
-        inqueue_item.pushKV("level", l);
-        inqueue_item.pushKV("count", inqueue_count);
-
-        inqueue.push_back(inqueue_item);
+        mnodeman.GetNextMasternodeInQueueForPayment(pChainTip->nHeight,l, true, inqueue_count, pChainTip);
+        nCount += inqueue_count;
     }
 
 

@@ -16,10 +16,15 @@ SubscriptionTipMenu::SubscriptionTipMenu(PassionGUI *_window, QWidget *parent) :
     ui->setupUi(this);
     //ui->btnLast->setVisible(false);
     setCssProperty(ui->container, "container-list-menu");
-    setCssProperty({ui->btnVisit, ui->btnDelete, ui->btnPay, ui->btnInfo, ui->btnFund}, "btn-list-menu");
+    setCssProperty(ui->btnVisit, "btn-subscribe-visit");
+    setCssProperty(ui->btnFund, "btn-subscribe-fund");
+    setCssProperty(ui->btnPay, "btn-subscribe-pay");
+    setCssProperty(ui->btnCopy, "btn-subscribe-copy");
+    setCssProperty(ui->btnInfo, "btn-subscribe-info");
+    //setCssProperty({ui->btnVisit, ui->btnDelete, ui->btnPay, ui->btnInfo, ui->btnFund}, "btn-list-menu");
     connect(ui->btnFund, SIGNAL(clicked()), this, SLOT(fundClicked()));
     connect(ui->btnVisit, SIGNAL(clicked()), this, SLOT(visitClicked()));
-    connect(ui->btnDelete, SIGNAL(clicked()), this, SLOT(deleteClicked()));
+    connect(ui->btnCopy, SIGNAL(clicked()), this, SLOT(deleteClicked()));
     connect(ui->btnPay, SIGNAL(clicked()), this, SLOT(payClicked()));
     connect(ui->btnInfo, SIGNAL(clicked()), this, SLOT(infoClicked()));
 }
@@ -32,7 +37,7 @@ void SubscriptionTipMenu::setFundBtnText(QString btnText){
 }
 
 void SubscriptionTipMenu::setDeleteBtnText(QString btnText){
-    ui->btnDelete->setText(btnText);
+    ui->btnCopy->setText(btnText);
 }
 
 void SubscriptionTipMenu::setPayBtnText(QString btnText){
@@ -41,7 +46,7 @@ void SubscriptionTipMenu::setPayBtnText(QString btnText){
 
 void SubscriptionTipMenu::setInfoBtnText(QString btnText, int minHeight){
     ui->btnInfo->setText(btnText);
-    ui->btnInfo->setMinimumHeight(minHeight);
+    //ui->btnInfo->setMinimumHeight(minHeight);
 }
 
 void SubscriptionTipMenu::setVisitBtnVisible(bool visible){
@@ -52,7 +57,7 @@ void SubscriptionTipMenu::setFundBtnVisible(bool visible){
 }
 
 void SubscriptionTipMenu::setDeleteBtnVisible(bool visible){
-    ui->btnDelete->setVisible(visible);
+    ui->btnCopy->setVisible(visible);
 }
 
 void SubscriptionTipMenu::setPayBtnVisible(bool visible) {

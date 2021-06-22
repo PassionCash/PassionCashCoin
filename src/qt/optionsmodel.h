@@ -33,9 +33,13 @@ public:
         MinimizeToTray,      // bool
         MapPortUPnP,         // bool
         MinimizeOnClose,     // bool
+        CombineUTXO,         // bool
         ProxyUse,            // bool
         ProxyIP,             // QString
         ProxyPort,           // int
+        SubscriptionServiceIP, // QString
+        SubscriptionAutofunding, // bool
+        SubscriptionAutofundingValue, // CAmount
         DisplayUnit,         // BitcoinUnits::Unit
         ThirdPartyTxUrls,    // QString
         Digits,              // QString
@@ -83,12 +87,23 @@ public:
     bool isHideCharts() { return fHideCharts; }
     bool getMinimizeToTray() { return fMinimizeToTray; }
     bool getMinimizeOnClose() { return fMinimizeOnClose; }
+    bool getCombineUTXO() { return fCombineUTXO; }
     int getDisplayUnit() { return nDisplayUnit; }
     QString getThirdPartyTxUrls() { return strThirdPartyTxUrls; }
     bool getProxySettings(QNetworkProxy& proxy) const;
     bool getCoinControlFeatures() { return fCoinControlFeatures; }
     const QString& getOverriddenByCommandLine() { return strOverriddenByCommandLine; }
     const QString& getLang() { return language; }
+    QString getSubscriptionServiceIP() { 
+        QString addr = this->data(this->index(OptionsModel::SubscriptionServiceIP), Qt::EditRole).toString();
+        if(addr.lastIndexOf("/") == addr.length()-1) {
+            return addr;
+        } else {
+            return addr + "/";
+        }
+    }
+    bool getSubscriptionAutofunding() { return this->data(this->index(OptionsModel::SubscriptionAutofunding), Qt::EditRole).toBool(); }
+    QString getSubscriptionAutofundingValue() { return (this->data(this->index(OptionsModel::SubscriptionAutofundingValue), Qt::EditRole).toString()); }
 
     /* Restart flag helper */
     void setRestartRequired(bool fRequired);
@@ -126,6 +141,7 @@ private:
     bool fHideCharts;
     bool fHideZeroBalances;
     bool fHideOrphans;
+    bool fCombineUTXO;
     /* settings that were overriden by command-line */
     QString strOverriddenByCommandLine;
 

@@ -170,7 +170,7 @@ bool SubscriptionModel::setData(QModelIndex &modelIndex, const QVariant insert, 
     int idx = modelIndex.row();
     beginRemoveRows(QModelIndex(), idx, idx);
     int timestamp = QDateTime::currentSecsSinceEpoch();
-    nodes.values().value(idx)->setSiteExpire(timestamp+3780);
+    nodes.values().value(idx)->setSiteExpire(timestamp+3600);
     endRemoveRows();
     writeSitesToDisk();
     Q_EMIT dataChanged(index(idx, 0, QModelIndex()), index(idx, 8, QModelIndex()) );

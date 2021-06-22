@@ -13,6 +13,7 @@
 #include "qt/passion/settings/settingssignmessagewidgets.h"
 #include "qt/passion/settings/settingswalletrepairwidget.h"
 #include "qt/passion/settings/settingswalletoptionswidget.h"
+#include "qt/passion/settings/settingssubscribeoptionswidget.h"
 #include "qt/passion/settings/settingsmainoptionswidget.h"
 #include "qt/passion/settings/settingsdisplayoptionswidget.h"
 #include "qt/passion/settings/settingsmultisendwidget.h"
@@ -64,6 +65,7 @@ private Q_SLOTS:
     void onOptionsClicked();
     void onMainOptionsClicked();
     void onWalletOptionsClicked();
+    void onSubscribeOptionsClicked();
     void onDisplayOptionsClicked();
 
     void onDiscardChanges();
@@ -90,6 +92,7 @@ private:
     SettingsSignMessageWidgets *settingsSingMessageWidgets{nullptr};
     SettingsWalletRepairWidget *settingsWalletRepairWidget{nullptr};
     SettingsWalletOptionsWidget *settingsWalletOptionsWidget{nullptr};
+    SettingsSubscribeOptionsWidget *settingsSubscribeOptionsWidget{nullptr};
     SettingsMainOptionsWidget *settingsMainOptionsWidget{nullptr};
     SettingsDisplayOptionsWidget *settingsDisplayOptionsWidget{nullptr};
     SettingsMultisendWidget *settingsMultisendWidget{nullptr};

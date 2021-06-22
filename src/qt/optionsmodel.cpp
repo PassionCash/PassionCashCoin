@@ -124,6 +124,22 @@ void OptionsModel::setWalletDefaultOptions(QSettings& settings, bool reset)
 {
     if (!settings.contains("bSpendZeroConfChange") || reset)
         settings.setValue("bSpendZeroConfChange", false);
+    
+    if (!settings.contains("fCombineUTXO") || reset) {
+        settings.setValue("fCombineUTXO", false);
+        fCombineUTXO = false;
+    } 
+    fCombineUTXO = settings.value("fCombineUTXO").toBool();
+    if (!settings.contains("subscriptionServiceIP") || reset) {
+        settings.setValue("subscriptionServiceIP", "http://www.passion-subscribe-feature.com");
+    }
+    if (!settings.contains("SubscriptionAutofunding") || reset) {
+        settings.setValue("SubscriptionAutofunding", false);
+    }
+    if (!settings.contains("SubscriptionAutofundingValue") || reset) {
+        settings.setValue("SubscriptionAutofundingValue", 10);
+    }
+
     if (!gArgs.SoftSetBoolArg("-spendzeroconfchange", settings.value("bSpendZeroConfChange").toBool()))
         addOverriddenOption("-spendzeroconfchange");
     if (reset) {
@@ -233,6 +249,7 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
             return GUIUtil::GetStartOnSystemStartup();
         case MinimizeToTray:
             return fMinimizeToTray;
+
         case MapPortUPnP:
 #ifdef USE_UPNP
             return settings.value("fUseUPnP");
@@ -257,10 +274,18 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
         }
 
 #ifdef ENABLE_WALLET
+        case SubscriptionServiceIP:
+            return settings.value("subscriptionServiceIP");
+        case SubscriptionAutofunding:
+            return settings.value("SubscriptionAutofunding");
+        case SubscriptionAutofundingValue:
+            return settings.value("SubscriptionAutofundingValue");
         case SpendZeroConfChange:
             return settings.value("bSpendZeroConfChange");
         case ShowMasternodesTab:
             return settings.value("fShowMasternodesTab");
+        case CombineUTXO:
+            return settings.value("fCombineUTXO");
         case StakeSplitThreshold:
         {
             // Return CAmount/qlonglong as double
@@ -319,6 +344,10 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
             fMinimizeToTray = value.toBool();
             settings.setValue("fMinimizeToTray", fMinimizeToTray);
             break;
+        case CombineUTXO:
+            fCombineUTXO = value.toBool();
+            settings.setValue("fCombineUTXO", value);            
+            break;
         case MapPortUPnP: // core option - can be changed on-the-fly
             settings.setValue("fUseUPnP", value.toBool());
             if (value.toBool()) {
@@ -363,6 +392,22 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
             }
         } break;
 #ifdef ENABLE_WALLET
+        case SubscriptionServiceIP: {
+            if (settings.contains("subscriptionServiceIP")) {
+                settings.setValue("subscriptionServiceIP", value);
+            }
+        } break;
+
+        case SubscriptionAutofunding: {
+            if (settings.contains("SubscriptionAutofunding")) {
+                settings.setValue("SubscriptionAutofunding", value);
+            }
+        } break;
+        case SubscriptionAutofundingValue: {
+            if (settings.contains("SubscriptionAutofundingValue")) {
+                settings.setValue("SubscriptionAutofundingValue", value);
+            }
+        } break;
         case SpendZeroConfChange:
             if (settings.value("bSpendZeroConfChange") != value) {
                 settings.setValue("bSpendZeroConfChange", value);
@@ -381,6 +426,7 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
         case nCustomFee:
             setCustomFeeValue(value.toLongLong());
             break;
+        
 #endif
         case StakeSplitThreshold:
             // Write double as qlonglong/CAmount

@@ -55,7 +55,7 @@ int MNModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-    return 6;
+    return 9;
 }
 
 
@@ -117,10 +117,11 @@ QVariant MNModel::data(const QModelIndex &index, int role) const
             }
             case MNLEVEL:{
                 CMasternode* mn = nodes.values().value(row).second;
+                if(!mn)
+                    return "";
                 CTxIn vin(mn->GetVin().prevout);
                 int level = CMasternode::Level(mn->GetVin(),chainActive.Height());
                 return (isAvailable) ? "Level: " + QString::number(level) : "Not available";
-
             }
         }
     }
@@ -159,8 +160,7 @@ bool MNModel::addMn(CMasternodeConfig::CMasternodeEntry* mne)
     int nIndex;
     if (!mne->castOutputIndex(nIndex))
         return false;
-
-    CMasternode* pmn = mnodeman.Find(COutPoint(uint256S(mne->getTxHash()), uint32_t(nIndex)));
+    CMasternode* pmn = mnodeman.Find((COutPoint(uint256S(mne->getTxHash()), uint32_t(nIndex))));
     nodes.insert(QString::fromStdString(mne->getAlias()), std::make_pair(QString::fromStdString(mne->getIp()), pmn));
     endInsertRows();
     return true;

@@ -25,14 +25,22 @@ SubRow::SubRow(QWidget *parent) :
     setCssProperty(ui->lblBalanceRegisteredAddressValue, "text-list-caption-medium");
     setCssProperty(ui->lblSiteFeeTitle, "text-list-title1");
     setCssProperty(ui->lblSiteFeeValue, "text-list-caption-medium");
-    setCssBtnPrimary(ui->btnVisitSite);
-    ui->btnVisitSite->setVisible(false);
+    /*
+    setCssProperty(ui->btnVisitSite, "btn-subscribe-visit");
+    setCssProperty(ui->btnFundSite, "btn-subscribe-fund");
+    setCssProperty(ui->btnPaySite, "btn-subscribe-pay");
+    setCssProperty(ui->btnCopySite, "btn-subscribe-copy");
+    setCssProperty(ui->btnInfoSite, "btn-subscribe-info");
+    */
     ui->lblDivisory->setStyleSheet("background-color:#bababa;");
 }
-
 void SubRow::updateView(QString domain, QString key, QString paymentaddress,QString sitefee, QString registeraddress, QString registerAddressBalance, QString expire, QString status){
-    ui->labelDomain->setText(domain);
-    ui->labelKey->setText(key);
+    if(domain.length() > 50) {
+        ui->labelDomain->setText(domain.left(50)+"...");
+    } else {
+        ui->labelDomain->setText(domain);
+    }
+    ui->labelKey->setText(key.left(16) + "..." + key.right(16));
     ui->lblValidTitle->setText("Time left");
     int expi = expire.toInt() + 3600;
     int timestamp = QDateTime::currentSecsSinceEpoch();
@@ -48,8 +56,8 @@ void SubRow::updateView(QString domain, QString key, QString paymentaddress,QStr
         ui->lblValidValue->setStyleSheet("color:#58EEA5");
     }
     ui->lblPaymentAddressTitle->setText("Payment to:");
-    ui->lblPaymentAddressValue->setText(paymentaddress);
-    ui->lblRegisteredAddressValue->setText(registeraddress);
+    ui->lblPaymentAddressValue->setText(paymentaddress.left(10) + "..." + paymentaddress.right(10));
+    ui->lblRegisteredAddressValue->setText(registeraddress.left(10) + "..." + registeraddress.right(10));
     ui->lblBalanceRegisteredAddressValue->setText(registerAddressBalance);
     ui->lblSiteFeeTitle->setText("Fee / h");
     ui->lblSiteFeeValue->setText(sitefee + " PASSION");

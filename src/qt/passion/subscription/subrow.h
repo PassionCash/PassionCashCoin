@@ -23,6 +23,14 @@ public:
 
 Q_SIGNALS:
     void onMenuClicked();
+    void onFundClicked();
+    void onDeleteClicked();
+    void onVisitClicked();
+    void onPayClicked();
+    void onInfoClicked();
+
+private Q_SLOTS:
+
 private:
     Ui::SubRow *ui;
 };

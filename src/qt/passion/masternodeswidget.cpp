@@ -476,7 +476,6 @@ void MasterNodesWidget::onCreateMNClicked()
         inform(tr("Cannot create Masternode controller, wallet locked"));
         return;
     }
-
     if (walletModel->getBalance() <= (COIN * 10000)) {
         inform(tr("Not enough balance to create a masternode, 10,000 %1 required.").arg(CURRENCY_UNIT.c_str()));
         return;

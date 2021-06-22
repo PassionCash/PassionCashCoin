@@ -71,10 +71,10 @@ void SettingsWalletOptionsWidget::onResetClicked(){
 void SettingsWalletOptionsWidget::setMapper(QDataWidgetMapper *mapper){
     mapper->addMapping(ui->radioButtonSpend, OptionsModel::SpendZeroConfChange);
     mapper->addMapping(ui->spinBoxStakeSplitThreshold, OptionsModel::StakeSplitThreshold);
+    mapper->addMapping(ui->checkBoxCombine, OptionsModel::CombineUTXO);
 
     // Network
     mapper->addMapping(ui->checkBoxMap, OptionsModel::MapPortUPnP);
-    //mapper->addMapping(ui->checkBoxCombine, OptionsModel::CombineUTXO);
     mapper->addMapping(ui->checkBoxAllow, OptionsModel::Listen);
     mapper->addMapping(ui->checkBoxConnect, OptionsModel::ProxyUse);
     mapper->addMapping(ui->lineEditProxy, OptionsModel::ProxyIP);

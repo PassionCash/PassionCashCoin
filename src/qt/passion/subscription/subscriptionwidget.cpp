@@ -70,7 +70,6 @@ public:
         QString registeraddress = index.sibling(index.row(), SubscriptionModel::REGISTERADDRESS).data(Qt::DisplayRole).toString();
         QString registeraddressbalance = index.sibling(index.row(), SubscriptionModel::REGISTERADDRESSBALANCE).data(Qt::DisplayRole).toString();
         row->updateView(domain, key, paymentaddress, sitefee,registeraddress,registeraddressbalance, expire, status);
-
     }
 
     QColor rectColor(bool isHovered, bool isSelected) override{
@@ -120,7 +119,6 @@ SubscriptionWidget::SubscriptionWidget(PassionGUI *parent) :
 
     setCssProperty(ui->lblDomain, "text-list-title1");
     initCssEditLine(ui->txtDomainInput);
-    ui->txtDebug->setVisible(false);
     //setCssProperty(ui->txtDomainInput, "edit-primary-multi-book");
     setCssBtnSecondary(ui->btnPay);
     setCssBtnSecondary(ui->btnRegister);
@@ -178,8 +176,8 @@ void SubscriptionWidget::onMNClicked(const QModelIndex &index){
     ui->listSites->setCurrentIndex(index);
     QRect rect = ui->listSites->visualRect(index);
     QPoint pos = rect.topRight();
-    pos.setX(pos.x() - (DECORATION_SIZE * 2));
-    pos.setY(pos.y() + (DECORATION_SIZE * 1.5));
+    pos.setX(pos.x() - (DECORATION_SIZE * 5));
+    pos.setY(pos.y() + (DECORATION_SIZE * 2));
     if(!this->menu){
         this->menu = new SubscriptionTipMenu(window, this);
         this->menu->setVisitBtnText(tr("Visit"));
@@ -250,8 +248,8 @@ void SubscriptionWidget::onFundMNClicked(){
         walletModel
     );
     if (sendStatus.status == WalletModel::OK) {
-        inform("Funding transaction to " + registerAddress + " successfully send");
-        subscriptionModel->setData(index, QVariant(),Qt::DisplayRole);
+        inform("Internal transaction to " + registerAddress + " successfully sent");
+        //subscriptionModel->setData(index, QVariant(),Qt::DisplayRole);
     } else {
         inform("Error occurred the addres... " + returnMsg);        
     }
@@ -270,7 +268,7 @@ void SubscriptionWidget::onPayClicked() {
     std::map<WalletModel::ListCoinsKey, std::vector<WalletModel::ListCoinsValue>> mapCoins;
     if(this->walletModel) {
         CAmount nSum = 0;
-        //TODO
+        //TODO LOCK WALLET MODELL
         this->walletModel->listCoins(mapCoins);   
         for (const std::pair<WalletModel::ListCoinsKey, std::vector<WalletModel::ListCoinsValue>>& coins : mapCoins) {
             QString sWalletAddress = coins.first.address;            
@@ -296,8 +294,7 @@ void SubscriptionWidget::onPayClicked() {
                 if(nSum > nSiteFee) break;
             }
         }
-    }
-            
+    }            
     cControl->destChange = DecodeDestination(registerAddress.toStdString());
     // const QString& addr, const QString& label, const CAmount& amount, const QString& message
     SendCoinsRecipient sendCoinsRecipient(destinationAddress, domain, nSiteFee, "");
@@ -307,6 +304,116 @@ void SubscriptionWidget::onPayClicked() {
     WalletModelTransaction currentTransaction(recipients);
     WalletModel::SendCoinsReturn prepareStatus;
     prepareStatus = walletModel->prepareTransaction(&currentTransaction, cControl, false);
+    QString returnMsg = tr("Unknown error");
+    // process prepareStatus and on error generate message shown to user
+    CClientUIInterface::MessageBoxFlags informType;
+    returnMsg = GuiTransactionsUtils::ProcessSendCoinsReturn(
+                this,
+                prepareStatus,
+                walletModel,
+                informType, // this flag is not needed
+                BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(),
+                                             currentTransaction.getTransactionFee()),
+                true
+        );
+    if (prepareStatus.status == WalletModel::OK) {
+        walletModel->sendCoins(currentTransaction);
+    }    
+    // process sendStatus and on error generate message shown to user
+    WalletModel::SendCoinsReturn sendStatus;
+    // process sendStatus and on error generate message shown to user
+    GuiTransactionsUtils::ProcessSendCoinsReturnAndInform(
+        this,
+        sendStatus,
+        walletModel
+    );
+    if (sendStatus.status == WalletModel::OK) {
+        inform("Payment transaction sent. Wait for confirmation to get access");
+        subscriptionModel->setData(index, QVariant(),Qt::DisplayRole);
+    } else {
+        inform("Error sending...");        
+    }
+    delete(cControl);
+    inform("Pay Clicked..."); 
+}
+
+void SubscriptionWidget::RegisterToSite() {
+    
+    CAmount val = walletModel->getOptionsModel()->getSubscriptionAutofundingValue().toLongLong() * COIN;
+
+    QString strHost = walletModel->getOptionsModel()->getSubscriptionServiceIP();
+    QUrl url(strHost + "getid.php");
+    QNetworkRequest request(url);
+    QNetworkAccessManager nam;
+    QNetworkReply *reply = nam.get(request);
+    while (!reply->isFinished())
+    {
+        qApp->processEvents();
+    }
+    QJsonDocument json = QJsonDocument::fromJson(reply->readAll());
+    reply->deleteLater();
+    QJsonObject obj = json.object();
+    int expire = obj["expire"].toInt(); // QString::number(expire)
+    int time = obj["time"].toInt(); // QString::number(time)
+    QString messageToSign = obj["hash"].toString();
+    QString siteurl = ui->txtDomainInput->text();
+
+    QString registerAddr = getNewAddress();
+    QString signature = signRegisterMessage(registerAddr,messageToSign);
+    QString sitehash = QCryptographicHash::hash(siteurl.toUtf8(),QCryptographicHash::Sha256).toHex();
+
+    QUrl serviceUrl = QUrl(strHost + "register2.php");
+    QByteArray postData;
+    QUrlQuery query;
+    query.addQueryItem("addr",registerAddr);
+    query.addQueryItem("hash",messageToSign);
+    query.addQueryItem("url",siteurl);
+    query.addQueryItem("sig",signature);
+    query.addQueryItem("sitehash", sitehash);
+    query.addQueryItem("submit","true");
+
+    postData = query.toString(QUrl::FullyEncoded).toUtf8();
+
+    // Call the webservice
+    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
+    QNetworkRequest networkRequest(serviceUrl);
+    networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+    QNetworkReply *reply2 = networkManager->post(networkRequest,postData);
+    while (!reply2->isFinished())
+    {
+        qApp->processEvents();
+    }
+    QByteArray response_data2 = reply2->readAll();
+    QJsonDocument json2 = QJsonDocument::fromJson(response_data2);
+    reply->deleteLater();
+    QString strJson(json2.toJson(QJsonDocument::Compact));
+    QJsonObject obj2 = json2.object();
+    if(obj2["status"] == 0) {
+        inform("ERROR " +obj2["message"].toString());
+    } else {
+        QString domain = siteurl;
+        QString key = obj2["key"].toString();
+        QString paymentaddress = obj2["siteaddr"].toString();
+        int sitefee = obj2["sitefee"].toInt();
+        int expire = obj["time"].toInt()*0;
+        int status = obj2["status"].toInt();
+        subscriptionModel->addMn(domain,key,paymentaddress,registerAddr,sitefee,expire,status);
+        if(walletModel->getOptionsModel()->getSubscriptionAutofunding()) {
+            inform("Site successfully registered, now fund address");
+        }
+        inform("Site successfully registered");
+        updateListState();
+    }
+}
+void SubscriptionWidget::sendCoinsto(CAmount amount, QString addressto, QString addressfrom, int type) {
+    
+    SendCoinsRecipient sendCoinsRecipient(addressfrom, "Funding ->" + addressfrom, amount, "");
+    // Send the 10 tx to one of your address
+    QList<SendCoinsRecipient> recipients;
+    recipients.append(sendCoinsRecipient);
+    WalletModelTransaction currentTransaction(recipients);
+    WalletModel::SendCoinsReturn prepareStatus;
+    prepareStatus = walletModel->prepareTransaction(&currentTransaction, nullptr, false);
     QString returnMsg = tr("Unknown error");
     // process prepareStatus and on error generate message shown to user
     CClientUIInterface::MessageBoxFlags informType;
@@ -332,81 +439,11 @@ void SubscriptionWidget::onPayClicked() {
         walletModel
     );
     if (sendStatus.status == WalletModel::OK) {
-        inform("Transaction Send");
+        inform("Funding transaction to " + addressfrom + " successfully send");
         subscriptionModel->setData(index, QVariant(),Qt::DisplayRole);
     } else {
-        inform("Error sending...");        
+        inform("Error occurred the addres... " + returnMsg);        
     }
-    delete(cControl);
-    inform("Pay Clicked..."); 
-}
-
-void SubscriptionWidget::RegisterToSite() {
-    
-    QNetworkRequest request(QUrl("http://btadng.ddns.net:8888/getid.php"));
-    QNetworkAccessManager nam;
-
-    QNetworkReply *reply = nam.get(request);
-    while (!reply->isFinished())
-    {
-        qApp->processEvents();
-    }
-    QByteArray response_data = reply->readAll();
-    QJsonDocument json = QJsonDocument::fromJson(response_data);
-    reply->deleteLater();
-    QJsonObject obj = json.object();
-
-    int expire = obj["expire"].toInt(); // QString::number(expire)
-    int time = obj["time"].toInt(); // QString::number(time)
-
-    QString siteurl = ui->txtDomainInput->text();
-    QString messageToSign = obj["hash"].toString();
-    QString registerAddr = getNewAddress();
-    QString signature = signRegisterMessage(registerAddr,messageToSign);
-    QString sitehash = QCryptographicHash::hash(siteurl.toUtf8(),QCryptographicHash::Sha256).toHex();
-
-    QUrl serviceUrl = QUrl("http://btadng.ddns.net:8888/register2.php");
-    QByteArray postData;
-    QUrlQuery query;
-    query.addQueryItem("addr",registerAddr);
-    query.addQueryItem("hash",messageToSign);
-    query.addQueryItem("url",siteurl);
-    query.addQueryItem("sig",signature);
-    query.addQueryItem("sitehash", sitehash);
-    query.addQueryItem("submit","true");
-
-    postData = query.toString(QUrl::FullyEncoded).toUtf8();
-
-    // Call the webservice
-    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
-    QNetworkRequest networkRequest(serviceUrl);
-    networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
-
-
-    QNetworkReply *reply2 = networkManager->post(networkRequest,postData);
-    while (!reply2->isFinished())
-    {
-        qApp->processEvents();
-    }
-    QByteArray response_data2 = reply2->readAll();
-    QJsonDocument json2 = QJsonDocument::fromJson(response_data2);
-    reply->deleteLater();
-    QString strJson(json2.toJson(QJsonDocument::Compact));
-    ui->txtDebug->document()->setPlainText(strJson);
-    QJsonObject obj2 = json2.object();
-    if(obj2["status"] == 0) {
-        inform("ERROR " +obj2["message"].toString());
-    } else {
-        QString domain = siteurl;
-        QString key = obj2["key"].toString();
-        QString paymentaddress = obj2["siteaddr"].toString();
-        int sitefee = obj2["sitefee"].toInt();
-        int expire = obj["time"].toInt()*0;
-        int status = obj2["status"].toInt();
-        subscriptionModel->addMn(domain,key,paymentaddress,registerAddr,sitefee,expire,status);
-        inform("Site successfully registered");
-    }
-   inform("Register clicked!");
 }
 QString SubscriptionWidget::getNewAddress() {
     try {

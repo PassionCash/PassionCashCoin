@@ -69,11 +69,12 @@ std::string CTxIn::ToString() const
     return str;
 }
 
-CTxOut::CTxOut(const CAmount& nValueIn, CScript scriptPubKeyIn)
+CTxOut::CTxOut(const CAmount& nValueIn, CScript scriptPubKeyIn, bool fWSSfunding)
 {
     nValue = nValueIn;
     scriptPubKey = scriptPubKeyIn;
     nRounds = -10;
+    fWSSFundingTransaction = fWSSfunding;
 }
 
 uint256 CTxOut::GetHash() const

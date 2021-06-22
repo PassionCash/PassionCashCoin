@@ -153,9 +153,7 @@ void MasterNodeWizardDialog::accept()
             if (ui->lineEditIpAddress->text().isEmpty()) {
                 return;
             }
-
             icConfirm4->setVisible(true);
-            ui->btnBack->setVisible(true);
             ui->btnBack->setVisible(true);
             isOk = createMN();
             QDialog::accept();
@@ -376,12 +374,13 @@ bool MasterNodeWizardDialog::createMN()
 
     fs::path pathNewConfFile = AbsPathForConfigVal(fs::path("masternode.conf"));
     rename(pathConfigFile, pathNewConfFile);
-
     mnEntry = masternodeConfig.add(alias, ipAddress+":"+port, mnKeyString, txID, indexOutStr);
-
+    if(!mnEntry) {
+        returnStr = "Failed to create mnEntry";
+        return false;
+    }
     // Lock collateral output
     walletModel->lockCoin(collateralOut);
-
     returnStr = tr("Master node created! Wait %1 confirmations before starting it.").arg(MasternodeCollateralMinConf());
     return true;
 }
@@ -412,7 +411,6 @@ void MasterNodeWizardDialog::onBackClicked()
             ui->pushName4->setChecked(false);
             ui->pushName3->setChecked(true);
             icConfirm3->setVisible(false);
-
             break;
         }
     }

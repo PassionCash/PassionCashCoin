@@ -9,6 +9,11 @@
         <file alias="default">passion/res/css/style_light.css</file>
     </qresource>
     <qresource prefix="/">
+        <file alias="btn-subscribe-fund">passion/res/img/subscribe_fund.png</file>
+        <file alias="btn-subscribe-pay">passion/res/img/subscribe_pay.png</file>
+        <file alias="btn-subscribe-visit">passion/res/img/subscribe_visit.png</file>
+        <file alias="btn-subscribe-info">passion/res/img/subscribe_info.png</file>
+        <file alias="btn-subscribe-copy">passion/res/img/subscribe_copy.png</file>
         <file alias="bg-splash-png">passion/res/img/bg-splash.png</file>
         <file alias="img-qr-test-big">passion/res/img/img-qr-test-big.png</file>
         <file alias="img-qr-test">passion/res/img/img-qr-test.png</file>
@@ -151,7 +156,8 @@
         <file alias="img-empty-staking-off">passion/res/img/img-empty-staking-off.svg</file>
         <file alias="img-empty-staking-on">passion/res/img/img-empty-staking-on.svg</file>
         <file alias="img-empty-transactions">passion/res/img/img-empty-transactions.svg</file>
-        <file alias="img-nav-logo">passion/res/img/img-nav-logo.svg</file>
+        <file alias="img-nav-logo-dark">passion/res/img/img-nav-logo-dark.png</file>
+        <file alias="img-nav-logo-light">passion/res/img/img-nav-logo-light.png</file>
         <file alias="img-qr">passion/res/img/img-qr.svg</file>
         <file alias="ic-contact-arrow-down">passion/res/img/ic-contact-arrow-down.svg</file>
         <file alias="ic-contact-arrow-down-white">passion/res/img/ic-contact-arrow-down-white.svg</file>

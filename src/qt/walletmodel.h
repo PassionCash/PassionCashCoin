@@ -176,7 +176,7 @@ public:
     bool haveWatchOnly() const;
     CAmount getDelegatedBalance() const;
     //Functions for autocombine UTXO to Stake amount
-    //void combineUTXO(CAmount&, CCoinControl*, CAmount&);
+    void combineUTXO(CAmount&, CCoinControl*, CAmount&);
     bool getUXTOMergeAddress(Destination& ret);
 
     bool isColdStaking() const;
