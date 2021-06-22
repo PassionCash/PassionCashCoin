@@ -1919,6 +1919,7 @@ QComboBox[cssClass="btn-combo-chart"] {
     font-size:16px;
     border:1px solid #bababa;
     color: #707070;
+    selection-color:#707070;
     text-align: right;
     border-radius:2px;
 }
@@ -2144,6 +2145,7 @@ QComboBox[cssClass="btn-combo"] {
     font-size:16px;
     border:1px solid #1d0618;
     color: #707070;
+    selection-color:#707070;
     text-align: right;
 }
 

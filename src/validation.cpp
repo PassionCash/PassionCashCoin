@@ -1719,6 +1719,14 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                          REJECT_INVALID, "bad-cb-amount");
     }
 
+    if (!fInitialBlockDownload) {
+        // check masternode/budget payment
+        if (!IsBlockPayeeValid(block, pindex->nHeight)) {
+            mapRejectedBlocks.emplace(block.GetHash(), GetTime());
+            return state.DoS(0, false, REJECT_INVALID, "bad-cb-payee", false, "Couldn't find masternode/budget payment");
+        }
+    }
+
     if (!control.Wait())
         return state.DoS(100, error("%s: CheckQueue failed", __func__), REJECT_INVALID, "block-validation-failed");
     int64_t nTime2 = GetTimeMicros();
@@ -1895,6 +1903,7 @@ void static UpdateTip(CBlockIndex* pindexNew)
 {
     AssertLockHeld(cs_main);
     chainActive.SetTip(pindexNew);
+    g_newP2CSRules = Params().GetConsensus().NetworkUpgradeActive(pindexNew->nHeight, Consensus::UPGRADE_V5_2);
 
     // New best block
     mempool.AddTransactionsUpdated(1);
@@ -2085,7 +2094,7 @@ public:
  *
  * The block is added to connectTrace if connection succeeds.
  */
-bool static ConnectTip(CValidationState& state, CBlockIndex* pindexNew, const std::shared_ptr<const CBlock>& pblock, ConnectTrace& connectTrace, DisconnectedBlockTransactions &disconnectpool)
+bool static ConnectTip(CValidationState& state, CBlockIndex* pindexNew, const std::shared_ptr<const CBlock>& pblock, ConnectTrace& connectTrace)
 {
     AssertLockHeld(cs_main);
     AssertLockHeld(mempool.cs);
@@ -2235,7 +2244,6 @@ static void PruneBlockIndexCandidates()
 static bool ActivateBestChainStep(CValidationState& state, CBlockIndex* pindexMostWork, const std::shared_ptr<const CBlock>& pblock, bool& fInvalidFound, ConnectTrace& connectTrace)
 {
     AssertLockHeld(cs_main);
-    AssertLockHeld(mempool.cs);
     const CBlockIndex* pindexOldTip = chainActive.Tip();
     const CBlockIndex* pindexFork = chainActive.FindFork(pindexMostWork);
 
@@ -2275,7 +2283,7 @@ static bool ActivateBestChainStep(CValidationState& state, CBlockIndex* pindexMo
 
         // Connect new blocks.
         for (CBlockIndex* pindexConnect : reverse_iterate(vpindexToConnect)) {
-            if (!ConnectTip(state, pindexConnect, (pindexConnect == pindexMostWork) ? pblock : std::shared_ptr<const CBlock>(), connectTrace, disconnectpool)) {
+            if (!ConnectTip(state, pindexConnect, (pindexConnect == pindexMostWork) ? pblock : std::shared_ptr<const CBlock>(), connectTrace)) {
                 if (state.IsInvalid()) {
                     // The block violates a consensus rule.
                     if (!state.CorruptionPossible())
@@ -2352,7 +2360,6 @@ bool ActivateBestChain(CValidationState& state, std::shared_ptr<const CBlock> pb
 
         {
             LOCK(cs_main);
-            LOCK(mempool.cs); // Lock transaction pool for at least as long as it takes for connectTrace to be consumed
             CBlockIndex* starting_tip = chainActive.Tip();
             bool blocks_connected = false;
             do {
@@ -2401,6 +2408,7 @@ bool ActivateBestChain(CValidationState& state, std::shared_ptr<const CBlock> pb
                 uiInterface.NotifyBlockTip(fInitialDownload, pindexNewTip);
             }
         }
+        // When we reach this point, we switched to a new tip (stored in pindexNewTip).
 
         // We check shutdown only after giving ActivateBestChainStep a chance to run once so that we
         // never shutdown before connecting the genesis block during LoadChainTip(). Previously this
@@ -2824,12 +2832,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                 nHeight = (*mi).second->nHeight + 1;
         }
 
-        // Passion
-        // It is entierly possible that we don't have enough data and this could fail
-        // (i.e. the block could indeed be valid). Store the block for later consideration
-        // but issue an initial reject message.
-        // The case also exists that the sending peer could not have enough data to see
-        // that this block is invalid, so don't issue an outright ban.
+        // PASSION
         if (nHeight != 0 && !IsInitialBlockDownload()) {
             // Last output of Cold-Stake is not abused
             if (IsPoS && !CheckColdStakeFreeOutput(*(block.vtx[1]), nHeight)) {
@@ -2840,13 +2843,6 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             // set Cold Staking Spork
             fColdStakingActive = !sporkManager.IsSporkActive(SPORK_19_COLDSTAKING_MAINTENANCE);
 
-            // check masternode/budget payment
-            if (!IsBlockPayeeValid(block, nHeight)) {
-                mapRejectedBlocks.emplace(block.GetHash(), GetTime());
-                return state.DoS(0, false, REJECT_INVALID, "bad-cb-payee", false, "Couldn't find masternode/budget payment");
-            }
-        } else {
-            LogPrintf("%s: Masternode/Budget payment checks skipped on sync\n", __func__);
         }
     }
 
@@ -3377,7 +3373,6 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, const std::shared_pt
 
     // Preliminary checks
     int64_t nStartTime = GetTimeMillis();
-    const Consensus::Params& consensus = Params().GetConsensus();
     int newHeight = 0;
 
     {
@@ -3643,6 +3638,9 @@ bool LoadChainTip(const CChainParams& chainparams)
     PruneBlockIndexCandidates();
 
     const CBlockIndex* pChainTip = chainActive.Tip();
+
+    // initial global flag update
+    g_newP2CSRules = Params().GetConsensus().NetworkUpgradeActive(pChainTip->nHeight, Consensus::UPGRADE_V5_2);
 
     LogPrintf("Loaded best chain: hashBestChain=%s height=%d date=%s progress=%f\n",
             pChainTip->GetBlockHash().GetHex(), pChainTip->nHeight,
@@ -4166,13 +4164,13 @@ void static CheckBlockIndex()
 //       it was the one which was commented out
 int ActiveProtocol()
 {
-    // SPORK_14 was used for 70919 (v4.1.1), commented out now.
-    //if (sporkManager.IsSporkActive(SPORK_14_NEW_PROTOCOL_ENFORCEMENT))
-    //        return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
-
-    // SPORK_15 is used for 70920 (v5.0.0)
-    if (sporkManager.IsSporkActive(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2))
+    // SPORK_14 is used for 70922 (v5.2.0)
+    if (sporkManager.IsSporkActive(SPORK_14_NEW_PROTOCOL_ENFORCEMENT))
             return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
+
+    // SPORK_15 was used for 70921 (v5.0.1), commented out now.
+    //if (sporkManager.IsSporkActive(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2))
+    //        return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
 
     return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT;
 }

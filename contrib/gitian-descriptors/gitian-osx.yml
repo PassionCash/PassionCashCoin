@@ -1,5 +1,5 @@
 ---
-name: "passion-osx-5.1"
+name: "passion-osx-1.0"
 enable_cache: true
 distro: "ubuntu"
 suites:

@@ -35,7 +35,7 @@ import os
 from random import randint
 import shutil
 
-from test_framework.test_framework import PassionTestFramework
+from test_framework.test_framework import PivxTestFramework
 from test_framework.util import (
     assert_equal,
     assert_raises_rpc_error,

@@ -9,7 +9,7 @@
 - Stop the node and restart it with -reindex-chainstate. Verify that the node has reindexed up to block 3.
 """
 
-from test_framework.test_framework import PassionTestFramework
+from test_framework.test_framework import PivxTestFramework
 from test_framework.util import assert_equal
 import time
 

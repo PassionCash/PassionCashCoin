@@ -71,9 +71,9 @@ DashboardWidget::DashboardWidget(PassionGUI* parent) :
     setCssProperty({ui->comboBoxMonths,  ui->comboBoxYears}, "btn-combo-chart-selected");
 
     ui->comboBoxMonths->setView(new QListView());
-    ui->comboBoxMonths->setStyleSheet("selection-background-color:transparent; selection-color:transparent;");
+    ui->comboBoxMonths->setStyleSheet("selection-background-color:transparent;");
     ui->comboBoxYears->setView(new QListView());
-    ui->comboBoxYears->setStyleSheet("selection-background-color:transparent; selection-color:transparent;");
+    ui->comboBoxYears->setStyleSheet("selection-background-color:transparent;");
     ui->pushButtonYear->setChecked(true);
 
     setCssProperty(ui->pushButtonChartArrow, "btn-chart-arrow");
